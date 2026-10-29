@@ -16,7 +16,7 @@ export interface AppOptions
 const options: AppOptions = {
   logger: {
     level: "info",
-    enabled: true,    
+    enabled: true,
     transport: {
       target: "@axiomhq/pino",
       options: {

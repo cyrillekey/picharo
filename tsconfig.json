@@ -3,15 +3,16 @@
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
     "sourceMap": true,
     "moduleResolution": "bundler",
     "module": "preserve",
     "target": "ES2022",
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "types": [
-      "node"
-    ]
+    "types": ["node"]
   },
-  "include": ["src/**/*.ts","prisma.config.ts"]
+  "include": ["src/**/*.ts", "prisma.config.ts"]
 }
