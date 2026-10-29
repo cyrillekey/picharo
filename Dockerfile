@@ -39,4 +39,4 @@ USER node
 EXPOSE 8080
 # The app is already compiled in the builder stage; no dev dependencies
 # are available here, so run the built output directly instead of `npm start`.
-CMD ["node_modules/.bin/fastify", "start", "-l", "info", "-a", "0.0.0.0", "dist/src/app.js"]
+CMD ["node_modules/.bin/fastify", "start", "-l", "info", "-a", "0.0.0.0", "dist/src/app.js","--options"]
