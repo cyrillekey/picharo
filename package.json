@@ -27,6 +27,7 @@
     "@fastify/type-provider-json-schema-to-ts": "^5.0.1",
     "@prisma/orm-postgres": "^8.0.0-rc.23",
     "bcrypt": "^6.0.0",
+    "close-with-grace": "^2.5.0",
     "dayjs": "^1.11.23",
     "dotenv": "^18.0.9",
     "ejs": "^7.0.2",
