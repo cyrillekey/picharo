@@ -32,4 +32,4 @@ RUN touch .env && chown node:node /app .env
 
 USER node
 EXPOSE 8080
-CMD ["node","dist/src/server.js"],
+CMD ["node", "--enable-source-maps", "dist/src/server.js"]
