@@ -1,0 +1,98 @@
+// use prisma-8
+model User {
+  id                      String                   @id @default(sql`gen_random_uuid()`)
+  email                   String                   @unique
+  password                String
+  country                 String
+  bio                     String
+  emailVerified           Boolean                  @default(false)
+  watchHistory            WatchHistory[]
+  emailVerificationTokens EmailVerificationToken[]
+  passwordResetTokens     PasswordResetToken[]
+  createdat               DateTime                 @default(now()) @onCreate(now())
+  updatedat               temporal.UpdatedAt
+
+  @@map("users")
+}
+
+model EmailVerificationToken {
+  id        String   @id @default(sql`gen_random_uuid()`)
+  tokenHash String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdat DateTime @default(now()) @onCreate(now())
+
+  @@index([userId])
+  @@map("email_verification_tokens")
+}
+
+model PasswordResetToken {
+  id        String   @id @default(sql`gen_random_uuid()`)
+  tokenHash String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdat DateTime @default(now()) @onCreate(now())
+
+  @@index([userId])
+  @@map("password_reset_tokens")
+}
+
+model WatchHistory {
+  id        Int                @default(autoincrement()) @id
+  movieId   Int
+  movie     Movie              @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdat DateTime           @default(now()) @onCreate(now())
+  updatedat temporal.UpdatedAt
+
+  @@map("watchhistory")
+}
+
+model Movie {
+  id               Int                @id @default(autoincrement())
+  title            Text
+  description      Text
+  popularity       Float
+  averagevote      Decimal
+  releaseDate      String
+  mediaType        String
+  originalLanguage String
+  languages        String[]
+  externalId       String
+  genres           MovieGenre[]
+  watchHistory     WatchHistory[]
+  createdat        DateTime           @default(now()) @onCreate(now())
+  updatedat        temporal.UpdatedAt
+
+  @@map("movie")
+}
+
+model MovieGenre {
+  // Fields
+  id        Int                @id @default(autoincrement())
+  movie     Movie              @relation(fields: [genreId], references: [id], onDelete: Cascade)
+  movieId   Int
+  genre     Genre              @relation(fields: [genreId], references: [id], onDelete: Cascade)
+  genreId   Int
+  createdat DateTime           @default(now()) @onCreate(now())
+  updatedat temporal.UpdatedAt
+
+  @@map("moviegenre")
+  @@unique([movieId, genreId])
+}
+
+model Genre {
+  // Fields
+  id        Int                @id
+  name      String
+  movies    MovieGenre[]
+  createdat DateTime           @default(now()) @onCreate(now())
+  updatedat temporal.UpdatedAt
+
+  @@map("genre")
+}
