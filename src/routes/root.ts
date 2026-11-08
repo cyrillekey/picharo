@@ -1,3 +1,4 @@
+import { baseManifest } from "@/utils/shared";
 import { FastifyPluginAsync } from "fastify";
 
 const root: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
@@ -5,10 +6,7 @@ const root: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     return { root: true };
   });
   fastify.get("/manifest.json", async function () {
-    return {
-      id: "org.picharo.stremio",
-      name: "Picharo addon",
-    };
+    return baseManifest;
   });
 };
 
