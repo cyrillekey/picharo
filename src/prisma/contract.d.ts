@@ -23,9 +23,9 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'b2825215b3a9e348ef981565c27d27793ef74167e6749452b97996f2a307b825'>;
+  StorageHashBase<'4aa4c8c76084eb54245e4974cfe0c1e22c91a6826c555ff6dd18bdd8bcdbf587'>;
 export type ExecutionHash =
-  ExecutionHashBase<'e767c9b1b7286bd3c7a4851fb793effc187e69377e83f3615a1fa437fdd99e37'>;
+  ExecutionHashBase<'d7e04429a937d8f036ba55ab4cc68f14f9ff9190a4a099f8bdfad463edce8e20'>;
 export type ProfileHash =
   ProfileHashBase<'3916f444a8a17ad749191acf9e08dad97d1a327b88c2f1d45d12f240296aa8b2'>;
 
@@ -309,16 +309,6 @@ export type StorageColumnInputTypes = ColumnTypesFromStorage<
 >;
 
 export namespace Models {
-  export type public_EmailVerificationToken = {
-    createdat: FieldOutputTypes['public']['EmailVerificationToken']['createdat'];
-    expiresAt: FieldOutputTypes['public']['EmailVerificationToken']['expiresAt'];
-    id: FieldOutputTypes['public']['EmailVerificationToken']['id'];
-    tokenHash: FieldOutputTypes['public']['EmailVerificationToken']['tokenHash'];
-    usedAt: FieldOutputTypes['public']['EmailVerificationToken']['usedAt'];
-    userId: FieldOutputTypes['public']['EmailVerificationToken']['userId'];
-    user: public_User;
-    readonly [RelationKeys]?: 'user';
-  };
   export type public_Genre = {
     createdat: FieldOutputTypes['public']['Genre']['createdat'];
     id: FieldOutputTypes['public']['Genre']['id'];
@@ -354,16 +344,6 @@ export namespace Models {
     movie: public_Movie;
     readonly [RelationKeys]?: 'genre' | 'movie';
   };
-  export type public_PasswordResetToken = {
-    createdat: FieldOutputTypes['public']['PasswordResetToken']['createdat'];
-    expiresAt: FieldOutputTypes['public']['PasswordResetToken']['expiresAt'];
-    id: FieldOutputTypes['public']['PasswordResetToken']['id'];
-    tokenHash: FieldOutputTypes['public']['PasswordResetToken']['tokenHash'];
-    usedAt: FieldOutputTypes['public']['PasswordResetToken']['usedAt'];
-    userId: FieldOutputTypes['public']['PasswordResetToken']['userId'];
-    user: public_User;
-    readonly [RelationKeys]?: 'user';
-  };
   export type public_User = {
     bio: FieldOutputTypes['public']['User']['bio'];
     country: FieldOutputTypes['public']['User']['country'];
@@ -373,10 +353,8 @@ export namespace Models {
     id: FieldOutputTypes['public']['User']['id'];
     password: FieldOutputTypes['public']['User']['password'];
     updatedat: FieldOutputTypes['public']['User']['updatedat'];
-    emailVerificationTokens: public_EmailVerificationToken[];
-    passwordResetTokens: public_PasswordResetToken[];
     watchHistory: public_WatchHistory[];
-    readonly [RelationKeys]?: 'emailVerificationTokens' | 'passwordResetTokens' | 'watchHistory';
+    readonly [RelationKeys]?: 'watchHistory';
   };
   export type public_WatchHistory = {
     createdat: FieldOutputTypes['public']['WatchHistory']['createdat'];
@@ -392,11 +370,9 @@ export namespace Models {
 
 export declare const models: {
   public: {
-    EmailVerificationToken: Models.public_EmailVerificationToken;
     Genre: Models.public_Genre;
     Movie: Models.public_Movie;
     MovieGenre: Models.public_MovieGenre;
-    PasswordResetToken: Models.public_PasswordResetToken;
     User: Models.public_User;
     WatchHistory: Models.public_WatchHistory;
   };
@@ -420,78 +396,6 @@ type ContractBase = Omit<
         readonly kind: 'postgres-schema';
         readonly entries: {
           readonly table: {
-            readonly email_verification_tokens: {
-              columns: {
-                readonly createdat: {
-                  readonly dataType: 'pg/timestamptz';
-                  readonly codecId: 'pg/timestamptz-date@1';
-                  readonly nullable: false;
-                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
-                  readonly typeParams: { readonly precision: 3 };
-                  readonly many: false;
-                };
-                readonly expiresAt: {
-                  readonly dataType: 'pg/timestamptz';
-                  readonly codecId: 'pg/timestamptz-date@1';
-                  readonly nullable: false;
-                  readonly typeParams: { readonly precision: 3 };
-                  readonly many: false;
-                };
-                readonly id: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
-                  readonly nullable: false;
-                  readonly default: {
-                    readonly kind: 'function';
-                    readonly expression: 'gen_random_uuid()';
-                  };
-                  readonly many: false;
-                };
-                readonly tokenHash: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
-                  readonly nullable: false;
-                  readonly many: false;
-                };
-                readonly usedAt: {
-                  readonly dataType: 'pg/timestamptz';
-                  readonly codecId: 'pg/timestamptz-date@1';
-                  readonly nullable: true;
-                  readonly typeParams: { readonly precision: 3 };
-                  readonly many: false;
-                };
-                readonly userId: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
-                  readonly nullable: false;
-                  readonly many: false;
-                };
-              };
-              primaryKey: { readonly columns: readonly ['id'] };
-              uniques: readonly [{ readonly columns: readonly ['tokenHash'] }];
-              indexes: readonly [
-                {
-                  readonly name: 'email_verification_tokens_userId_idx_a489d58a';
-                  readonly prefix: 'email_verification_tokens_userId_idx';
-                  readonly columns: readonly ['userId'];
-                  readonly unique: false;
-                },
-              ];
-              foreignKeys: readonly [
-                {
-                  readonly source: {
-                    readonly namespaceId: 'public' & NamespaceId;
-                    readonly tableName: 'email_verification_tokens';
-                    readonly columns: readonly ['userId'];
-                  };
-                  readonly target: {
-                    readonly namespaceId: 'public' & NamespaceId;
-                    readonly tableName: 'users';
-                    readonly columns: readonly ['id'];
-                  };
-                },
-              ];
-            };
             readonly genre: {
               columns: {
                 readonly createdat: {
@@ -691,78 +595,6 @@ type ContractBase = Omit<
                 },
               ];
             };
-            readonly password_reset_tokens: {
-              columns: {
-                readonly createdat: {
-                  readonly dataType: 'pg/timestamptz';
-                  readonly codecId: 'pg/timestamptz-date@1';
-                  readonly nullable: false;
-                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
-                  readonly typeParams: { readonly precision: 3 };
-                  readonly many: false;
-                };
-                readonly expiresAt: {
-                  readonly dataType: 'pg/timestamptz';
-                  readonly codecId: 'pg/timestamptz-date@1';
-                  readonly nullable: false;
-                  readonly typeParams: { readonly precision: 3 };
-                  readonly many: false;
-                };
-                readonly id: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
-                  readonly nullable: false;
-                  readonly default: {
-                    readonly kind: 'function';
-                    readonly expression: 'gen_random_uuid()';
-                  };
-                  readonly many: false;
-                };
-                readonly tokenHash: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
-                  readonly nullable: false;
-                  readonly many: false;
-                };
-                readonly usedAt: {
-                  readonly dataType: 'pg/timestamptz';
-                  readonly codecId: 'pg/timestamptz-date@1';
-                  readonly nullable: true;
-                  readonly typeParams: { readonly precision: 3 };
-                  readonly many: false;
-                };
-                readonly userId: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
-                  readonly nullable: false;
-                  readonly many: false;
-                };
-              };
-              primaryKey: { readonly columns: readonly ['id'] };
-              uniques: readonly [{ readonly columns: readonly ['tokenHash'] }];
-              indexes: readonly [
-                {
-                  readonly name: 'password_reset_tokens_userId_idx_a489d58a';
-                  readonly prefix: 'password_reset_tokens_userId_idx';
-                  readonly columns: readonly ['userId'];
-                  readonly unique: false;
-                },
-              ];
-              foreignKeys: readonly [
-                {
-                  readonly source: {
-                    readonly namespaceId: 'public' & NamespaceId;
-                    readonly tableName: 'password_reset_tokens';
-                    readonly columns: readonly ['userId'];
-                  };
-                  readonly target: {
-                    readonly namespaceId: 'public' & NamespaceId;
-                    readonly tableName: 'users';
-                    readonly columns: readonly ['id'];
-                  };
-                },
-              ];
-            };
             readonly users: {
               columns: {
                 readonly bio: {
@@ -924,19 +756,11 @@ type ContractBase = Omit<
   readonly target: 'postgres';
   readonly targetFamily: 'sql';
   readonly roots: {
-    readonly email_verification_tokens: {
-      readonly namespace: 'public' & NamespaceId;
-      readonly model: 'EmailVerificationToken';
-    };
     readonly genre: { readonly namespace: 'public' & NamespaceId; readonly model: 'Genre' };
     readonly movie: { readonly namespace: 'public' & NamespaceId; readonly model: 'Movie' };
     readonly moviegenre: {
       readonly namespace: 'public' & NamespaceId;
       readonly model: 'MovieGenre';
-    };
-    readonly password_reset_tokens: {
-      readonly namespace: 'public' & NamespaceId;
-      readonly model: 'PasswordResetToken';
     };
     readonly users: { readonly namespace: 'public' & NamespaceId; readonly model: 'User' };
     readonly watchhistory: {
@@ -948,69 +772,6 @@ type ContractBase = Omit<
     readonly namespaces: {
       readonly public: {
         readonly models: {
-          readonly EmailVerificationToken: {
-            readonly fields: {
-              readonly createdat: {
-                readonly nullable: false;
-                readonly type: {
-                  readonly kind: 'scalar';
-                  readonly codecId: 'pg/timestamptz-date@1';
-                  readonly typeParams: { readonly precision: 3 };
-                };
-              };
-              readonly expiresAt: {
-                readonly nullable: false;
-                readonly type: {
-                  readonly kind: 'scalar';
-                  readonly codecId: 'pg/timestamptz-date@1';
-                  readonly typeParams: { readonly precision: 3 };
-                };
-              };
-              readonly id: {
-                readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
-              };
-              readonly tokenHash: {
-                readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
-              };
-              readonly usedAt: {
-                readonly nullable: true;
-                readonly type: {
-                  readonly kind: 'scalar';
-                  readonly codecId: 'pg/timestamptz-date@1';
-                  readonly typeParams: { readonly precision: 3 };
-                };
-              };
-              readonly userId: {
-                readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
-              };
-            };
-            readonly relations: {
-              readonly user: {
-                readonly to: { readonly namespace: 'public' & NamespaceId; readonly model: 'User' };
-                readonly cardinality: 'N:1';
-                readonly nullable: false;
-                readonly on: {
-                  readonly localFields: readonly ['userId'];
-                  readonly targetFields: readonly ['id'];
-                };
-              };
-            };
-            readonly storage: {
-              readonly table: 'email_verification_tokens';
-              readonly namespaceId: 'public';
-              readonly fields: {
-                readonly createdat: { readonly column: 'createdat' };
-                readonly expiresAt: { readonly column: 'expiresAt' };
-                readonly id: { readonly column: 'id' };
-                readonly tokenHash: { readonly column: 'tokenHash' };
-                readonly usedAt: { readonly column: 'usedAt' };
-                readonly userId: { readonly column: 'userId' };
-              };
-            };
-          };
           readonly Genre: {
             readonly fields: {
               readonly createdat: {
@@ -1234,69 +995,6 @@ type ContractBase = Omit<
               };
             };
           };
-          readonly PasswordResetToken: {
-            readonly fields: {
-              readonly createdat: {
-                readonly nullable: false;
-                readonly type: {
-                  readonly kind: 'scalar';
-                  readonly codecId: 'pg/timestamptz-date@1';
-                  readonly typeParams: { readonly precision: 3 };
-                };
-              };
-              readonly expiresAt: {
-                readonly nullable: false;
-                readonly type: {
-                  readonly kind: 'scalar';
-                  readonly codecId: 'pg/timestamptz-date@1';
-                  readonly typeParams: { readonly precision: 3 };
-                };
-              };
-              readonly id: {
-                readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
-              };
-              readonly tokenHash: {
-                readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
-              };
-              readonly usedAt: {
-                readonly nullable: true;
-                readonly type: {
-                  readonly kind: 'scalar';
-                  readonly codecId: 'pg/timestamptz-date@1';
-                  readonly typeParams: { readonly precision: 3 };
-                };
-              };
-              readonly userId: {
-                readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
-              };
-            };
-            readonly relations: {
-              readonly user: {
-                readonly to: { readonly namespace: 'public' & NamespaceId; readonly model: 'User' };
-                readonly cardinality: 'N:1';
-                readonly nullable: false;
-                readonly on: {
-                  readonly localFields: readonly ['userId'];
-                  readonly targetFields: readonly ['id'];
-                };
-              };
-            };
-            readonly storage: {
-              readonly table: 'password_reset_tokens';
-              readonly namespaceId: 'public';
-              readonly fields: {
-                readonly createdat: { readonly column: 'createdat' };
-                readonly expiresAt: { readonly column: 'expiresAt' };
-                readonly id: { readonly column: 'id' };
-                readonly tokenHash: { readonly column: 'tokenHash' };
-                readonly usedAt: { readonly column: 'usedAt' };
-                readonly userId: { readonly column: 'userId' };
-              };
-            };
-          };
           readonly User: {
             readonly fields: {
               readonly bio: {
@@ -1341,28 +1039,6 @@ type ContractBase = Omit<
               };
             };
             readonly relations: {
-              readonly emailVerificationTokens: {
-                readonly to: {
-                  readonly namespace: 'public' & NamespaceId;
-                  readonly model: 'EmailVerificationToken';
-                };
-                readonly cardinality: '1:N';
-                readonly on: {
-                  readonly localFields: readonly ['id'];
-                  readonly targetFields: readonly ['userId'];
-                };
-              };
-              readonly passwordResetTokens: {
-                readonly to: {
-                  readonly namespace: 'public' & NamespaceId;
-                  readonly model: 'PasswordResetToken';
-                };
-                readonly cardinality: '1:N';
-                readonly on: {
-                  readonly localFields: readonly ['id'];
-                  readonly targetFields: readonly ['userId'];
-                };
-              };
               readonly watchHistory: {
                 readonly to: {
                   readonly namespace: 'public' & NamespaceId;
@@ -1500,18 +1176,6 @@ type ContractBase = Omit<
             readonly params: { readonly precision: 3 };
           };
           readonly ref: {
-            readonly entry: 'email_verification_tokens';
-            readonly field: 'createdat';
-            readonly namespace: 'public';
-          };
-        },
-        {
-          readonly onCreate: {
-            readonly id: 'timestampNow';
-            readonly kind: 'generator';
-            readonly params: { readonly precision: 3 };
-          };
-          readonly ref: {
             readonly entry: 'genre';
             readonly field: 'createdat';
             readonly namespace: 'public';
@@ -1589,18 +1253,6 @@ type ContractBase = Omit<
           readonly ref: {
             readonly entry: 'moviegenre';
             readonly field: 'updatedat';
-            readonly namespace: 'public';
-          };
-        },
-        {
-          readonly onCreate: {
-            readonly id: 'timestampNow';
-            readonly kind: 'generator';
-            readonly params: { readonly precision: 3 };
-          };
-          readonly ref: {
-            readonly entry: 'password_reset_tokens';
-            readonly field: 'createdat';
             readonly namespace: 'public';
           };
         },

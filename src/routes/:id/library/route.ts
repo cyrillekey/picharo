@@ -10,6 +10,22 @@ const libraryRoute: FastifyPluginCallbackJsonSchemaToTs = (
       schema: {
         consumes: ["application/json"],
         produces: ["application/json"],
+        response: {
+          default: {
+            type: "object",
+            properties: {
+              success: {
+                type: "boolean",
+              },
+              message: {
+                type: "string",
+              },
+              id: {
+                type: "string",
+              },
+            },
+          },
+        },
         params: {
           type: "object",
           properties: {
@@ -30,7 +46,16 @@ const libraryRoute: FastifyPluginCallbackJsonSchemaToTs = (
         },
       },
     },
-    (req, reply) => {},
+    async (req, reply) => {
+      try {
+      } catch (error) {
+        req.log.error(error);
+        return {
+          success: false,
+          message: "Error! Could not validate request",
+        };
+      }
+    },
   );
 };
 

@@ -1,44 +1,16 @@
 // use prisma-8
 model User {
-  id                      String                   @id @default(sql`gen_random_uuid()`)
-  email                   String                   @unique
-  password                String
-  country                 String
-  bio                     String
-  emailVerified           Boolean                  @default(false)
-  watchHistory            WatchHistory[]
-  emailVerificationTokens EmailVerificationToken[]
-  passwordResetTokens     PasswordResetToken[]
-  createdat               DateTime                 @default(now()) @onCreate(now())
-  updatedat               temporal.UpdatedAt
+  id            String             @id @default(sql`gen_random_uuid()`)
+  email         String             @unique
+  password      String
+  country       String
+  bio           String
+  emailVerified Boolean            @default(false)
+  watchHistory  WatchHistory[]
+  createdat     DateTime           @default(now()) @onCreate(now())
+  updatedat     temporal.UpdatedAt
 
   @@map("users")
-}
-
-model EmailVerificationToken {
-  id        String   @id @default(sql`gen_random_uuid()`)
-  tokenHash String   @unique
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  expiresAt DateTime
-  usedAt    DateTime?
-  createdat DateTime @default(now()) @onCreate(now())
-
-  @@index([userId])
-  @@map("email_verification_tokens")
-}
-
-model PasswordResetToken {
-  id        String   @id @default(sql`gen_random_uuid()`)
-  tokenHash String   @unique
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  expiresAt DateTime
-  usedAt    DateTime?
-  createdat DateTime @default(now()) @onCreate(now())
-
-  @@index([userId])
-  @@map("password_reset_tokens")
 }
 
 model WatchHistory {

@@ -4,10 +4,6 @@
   "target": "postgres",
   "profileHash": "3916f444a8a17ad749191acf9e08dad97d1a327b88c2f1d45d12f240296aa8b2",
   "roots": {
-    "email_verification_tokens": {
-      "model": "EmailVerificationToken",
-      "namespace": "public"
-    },
     "genre": {
       "model": "Genre",
       "namespace": "public"
@@ -18,10 +14,6 @@
     },
     "moviegenre": {
       "model": "MovieGenre",
-      "namespace": "public"
-    },
-    "password_reset_tokens": {
-      "model": "PasswordResetToken",
       "namespace": "public"
     },
     "users": {
@@ -37,103 +29,6 @@
     "namespaces": {
       "public": {
         "models": {
-          "EmailVerificationToken": {
-            "fields": {
-              "createdat": {
-                "nullable": false,
-                "type": {
-                  "codecId": "pg/timestamptz-date@1",
-                  "kind": "scalar",
-                  "typeParams": {
-                    "precision": 3
-                  }
-                }
-              },
-              "expiresAt": {
-                "nullable": false,
-                "type": {
-                  "codecId": "pg/timestamptz-date@1",
-                  "kind": "scalar",
-                  "typeParams": {
-                    "precision": 3
-                  }
-                }
-              },
-              "id": {
-                "nullable": false,
-                "type": {
-                  "codecId": "pg/text@1",
-                  "kind": "scalar"
-                }
-              },
-              "tokenHash": {
-                "nullable": false,
-                "type": {
-                  "codecId": "pg/text@1",
-                  "kind": "scalar"
-                }
-              },
-              "usedAt": {
-                "nullable": true,
-                "type": {
-                  "codecId": "pg/timestamptz-date@1",
-                  "kind": "scalar",
-                  "typeParams": {
-                    "precision": 3
-                  }
-                }
-              },
-              "userId": {
-                "nullable": false,
-                "type": {
-                  "codecId": "pg/text@1",
-                  "kind": "scalar"
-                }
-              }
-            },
-            "relations": {
-              "user": {
-                "cardinality": "N:1",
-                "nullable": false,
-                "on": {
-                  "localFields": [
-                    "userId"
-                  ],
-                  "targetFields": [
-                    "id"
-                  ]
-                },
-                "to": {
-                  "model": "User",
-                  "namespace": "public"
-                }
-              }
-            },
-            "storage": {
-              "fields": {
-                "createdat": {
-                  "column": "createdat"
-                },
-                "expiresAt": {
-                  "column": "expiresAt"
-                },
-                "id": {
-                  "column": "id"
-                },
-                "tokenHash": {
-                  "column": "tokenHash"
-                },
-                "usedAt": {
-                  "column": "usedAt"
-                },
-                "userId": {
-                  "column": "userId"
-                }
-              },
-              "namespaceId": "public",
-              "table": "email_verification_tokens"
-            }
-          },
           "Genre": {
             "fields": {
               "createdat": {
@@ -478,103 +373,6 @@
               "table": "moviegenre"
             }
           },
-          "PasswordResetToken": {
-            "fields": {
-              "createdat": {
-                "nullable": false,
-                "type": {
-                  "codecId": "pg/timestamptz-date@1",
-                  "kind": "scalar",
-                  "typeParams": {
-                    "precision": 3
-                  }
-                }
-              },
-              "expiresAt": {
-                "nullable": false,
-                "type": {
-                  "codecId": "pg/timestamptz-date@1",
-                  "kind": "scalar",
-                  "typeParams": {
-                    "precision": 3
-                  }
-                }
-              },
-              "id": {
-                "nullable": false,
-                "type": {
-                  "codecId": "pg/text@1",
-                  "kind": "scalar"
-                }
-              },
-              "tokenHash": {
-                "nullable": false,
-                "type": {
-                  "codecId": "pg/text@1",
-                  "kind": "scalar"
-                }
-              },
-              "usedAt": {
-                "nullable": true,
-                "type": {
-                  "codecId": "pg/timestamptz-date@1",
-                  "kind": "scalar",
-                  "typeParams": {
-                    "precision": 3
-                  }
-                }
-              },
-              "userId": {
-                "nullable": false,
-                "type": {
-                  "codecId": "pg/text@1",
-                  "kind": "scalar"
-                }
-              }
-            },
-            "relations": {
-              "user": {
-                "cardinality": "N:1",
-                "nullable": false,
-                "on": {
-                  "localFields": [
-                    "userId"
-                  ],
-                  "targetFields": [
-                    "id"
-                  ]
-                },
-                "to": {
-                  "model": "User",
-                  "namespace": "public"
-                }
-              }
-            },
-            "storage": {
-              "fields": {
-                "createdat": {
-                  "column": "createdat"
-                },
-                "expiresAt": {
-                  "column": "expiresAt"
-                },
-                "id": {
-                  "column": "id"
-                },
-                "tokenHash": {
-                  "column": "tokenHash"
-                },
-                "usedAt": {
-                  "column": "usedAt"
-                },
-                "userId": {
-                  "column": "userId"
-                }
-              },
-              "namespaceId": "public",
-              "table": "password_reset_tokens"
-            }
-          },
           "User": {
             "fields": {
               "bio": {
@@ -641,36 +439,6 @@
               }
             },
             "relations": {
-              "emailVerificationTokens": {
-                "cardinality": "1:N",
-                "on": {
-                  "localFields": [
-                    "id"
-                  ],
-                  "targetFields": [
-                    "userId"
-                  ]
-                },
-                "to": {
-                  "model": "EmailVerificationToken",
-                  "namespace": "public"
-                }
-              },
-              "passwordResetTokens": {
-                "cardinality": "1:N",
-                "on": {
-                  "localFields": [
-                    "id"
-                  ],
-                  "targetFields": [
-                    "userId"
-                  ]
-                },
-                "to": {
-                  "model": "PasswordResetToken",
-                  "namespace": "public"
-                }
-              },
               "watchHistory": {
                 "cardinality": "1:N",
                 "on": {
@@ -827,101 +595,6 @@
       "public": {
         "entries": {
           "table": {
-            "email_verification_tokens": {
-              "columns": {
-                "createdat": {
-                  "codecId": "pg/timestamptz-date@1",
-                  "dataType": "pg/timestamptz",
-                  "default": {
-                    "expression": "now()",
-                    "kind": "function"
-                  },
-                  "nullable": false,
-                  "typeParams": {
-                    "precision": 3
-                  }
-                },
-                "expiresAt": {
-                  "codecId": "pg/timestamptz-date@1",
-                  "dataType": "pg/timestamptz",
-                  "nullable": false,
-                  "typeParams": {
-                    "precision": 3
-                  }
-                },
-                "id": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
-                  "default": {
-                    "expression": "gen_random_uuid()",
-                    "kind": "function"
-                  },
-                  "nullable": false
-                },
-                "tokenHash": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
-                  "nullable": false
-                },
-                "usedAt": {
-                  "codecId": "pg/timestamptz-date@1",
-                  "dataType": "pg/timestamptz",
-                  "nullable": true,
-                  "typeParams": {
-                    "precision": 3
-                  }
-                },
-                "userId": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
-                  "nullable": false
-                }
-              },
-              "foreignKeys": [
-                {
-                  "index": {
-                    "name": "email_verification_tokens_userId_idx_a489d58a"
-                  },
-                  "onDelete": "cascade",
-                  "source": {
-                    "columns": [
-                      "userId"
-                    ],
-                    "namespaceId": "public",
-                    "tableName": "email_verification_tokens"
-                  },
-                  "target": {
-                    "columns": [
-                      "id"
-                    ],
-                    "namespaceId": "public",
-                    "tableName": "users"
-                  }
-                }
-              ],
-              "indexes": [
-                {
-                  "columns": [
-                    "userId"
-                  ],
-                  "name": "email_verification_tokens_userId_idx_a489d58a",
-                  "prefix": "email_verification_tokens_userId_idx",
-                  "unique": false
-                }
-              ],
-              "primaryKey": {
-                "columns": [
-                  "id"
-                ]
-              },
-              "uniques": [
-                {
-                  "columns": [
-                    "tokenHash"
-                  ]
-                }
-              ]
-            },
             "genre": {
               "columns": {
                 "createdat": {
@@ -1168,101 +841,6 @@
                 }
               ]
             },
-            "password_reset_tokens": {
-              "columns": {
-                "createdat": {
-                  "codecId": "pg/timestamptz-date@1",
-                  "dataType": "pg/timestamptz",
-                  "default": {
-                    "expression": "now()",
-                    "kind": "function"
-                  },
-                  "nullable": false,
-                  "typeParams": {
-                    "precision": 3
-                  }
-                },
-                "expiresAt": {
-                  "codecId": "pg/timestamptz-date@1",
-                  "dataType": "pg/timestamptz",
-                  "nullable": false,
-                  "typeParams": {
-                    "precision": 3
-                  }
-                },
-                "id": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
-                  "default": {
-                    "expression": "gen_random_uuid()",
-                    "kind": "function"
-                  },
-                  "nullable": false
-                },
-                "tokenHash": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
-                  "nullable": false
-                },
-                "usedAt": {
-                  "codecId": "pg/timestamptz-date@1",
-                  "dataType": "pg/timestamptz",
-                  "nullable": true,
-                  "typeParams": {
-                    "precision": 3
-                  }
-                },
-                "userId": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
-                  "nullable": false
-                }
-              },
-              "foreignKeys": [
-                {
-                  "index": {
-                    "name": "password_reset_tokens_userId_idx_a489d58a"
-                  },
-                  "onDelete": "cascade",
-                  "source": {
-                    "columns": [
-                      "userId"
-                    ],
-                    "namespaceId": "public",
-                    "tableName": "password_reset_tokens"
-                  },
-                  "target": {
-                    "columns": [
-                      "id"
-                    ],
-                    "namespaceId": "public",
-                    "tableName": "users"
-                  }
-                }
-              ],
-              "indexes": [
-                {
-                  "columns": [
-                    "userId"
-                  ],
-                  "name": "password_reset_tokens_userId_idx_a489d58a",
-                  "prefix": "password_reset_tokens_userId_idx",
-                  "unique": false
-                }
-              ],
-              "primaryKey": {
-                "columns": [
-                  "id"
-                ]
-              },
-              "uniques": [
-                {
-                  "columns": [
-                    "tokenHash"
-                  ]
-                }
-              ]
-            },
             "users": {
               "columns": {
                 "bio": {
@@ -1454,10 +1032,10 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "b2825215b3a9e348ef981565c27d27793ef74167e6749452b97996f2a307b825"
+    "storageHash": "4aa4c8c76084eb54245e4974cfe0c1e22c91a6826c555ff6dd18bdd8bcdbf587"
   },
   "execution": {
-    "executionHash": "e767c9b1b7286bd3c7a4851fb793effc187e69377e83f3615a1fa437fdd99e37",
+    "executionHash": "d7e04429a937d8f036ba55ab4cc68f14f9ff9190a4a099f8bdfad463edce8e20",
     "mutations": {
       "defaults": [
         {
@@ -1469,20 +1047,6 @@
             }
           },
           "ref": {
-            "entry": "email_verification_tokens",
-            "field": "createdat",
-            "namespace": "public"
-          }
-        },
-        {
-          "onCreate": {
-            "id": "timestampNow",
-            "kind": "generator",
-            "params": {
-              "precision": 3
-            }
-          },
-          "ref": {
             "entry": "genre",
             "field": "createdat",
             "namespace": "public"
@@ -1576,20 +1140,6 @@
           "ref": {
             "entry": "moviegenre",
             "field": "updatedat",
-            "namespace": "public"
-          }
-        },
-        {
-          "onCreate": {
-            "id": "timestampNow",
-            "kind": "generator",
-            "params": {
-              "precision": 3
-            }
-          },
-          "ref": {
-            "entry": "password_reset_tokens",
-            "field": "createdat",
             "namespace": "public"
           }
         },
