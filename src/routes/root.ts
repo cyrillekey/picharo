@@ -1,8 +1,8 @@
 import { baseManifest } from "@/utils/shared";
-import { FastifyPluginAsync } from "fastify";
+import type { FastifyPluginAsync } from "fastify";
 
-const root: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
-  fastify.get("/health", async function (request, reply) {
+const root: FastifyPluginAsync = async (fastify, _opts): Promise<void> => {
+  fastify.get("/health", async function () {
     return { root: true };
   });
   fastify.get("/manifest.json", async function () {

@@ -1,8 +1,8 @@
-import { FastifyPluginCallbackJsonSchemaToTs } from "@fastify/type-provider-json-schema-to-ts";
+import type { FastifyPluginCallbackJsonSchemaToTs } from "@fastify/type-provider-json-schema-to-ts";
 
 const libraryRoute: FastifyPluginCallbackJsonSchemaToTs = (
   fastify,
-  opts,
+  _opts,
 ): void => {
   fastify.all(
     "/:type/:videoID:/:extraArgs.json",
@@ -46,8 +46,9 @@ const libraryRoute: FastifyPluginCallbackJsonSchemaToTs = (
         },
       },
     },
-    async (req, reply) => {
+    async (req, _reply) => {
       try {
+        // TODO: resolve the requested library item.
       } catch (error) {
         req.log.error(error);
         return {

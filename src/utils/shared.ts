@@ -13,6 +13,5 @@ export const baseManifest = {
   catalogs: [],
   resources: ["catalog", "library", "player"],
   types: ["catalog"],
-  description:
-    "Picharo better catalogsƒ",
+  description: "Picharo better catalogsƒ",
 };

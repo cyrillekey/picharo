@@ -1,0 +1,12 @@
+node_modules/
+dist/
+coverage/
+package-lock.json
+
+# Prisma-generated files
+src/prisma/contract.d.ts
+src/prisma/contract.json
+src/prisma/contract.prisma
+src/prisma/ops.json
+src/prisma/migration.json
+migrations/snapshots/

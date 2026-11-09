@@ -1,8 +1,8 @@
-import { FastifyPluginCallbackJsonSchemaToTs } from "@fastify/type-provider-json-schema-to-ts";
+import type { FastifyPluginCallbackJsonSchemaToTs } from "@fastify/type-provider-json-schema-to-ts";
 
 const playerRoute: FastifyPluginCallbackJsonSchemaToTs = (
-  fastify,
-  opts,
+  _fastify,
+  _opts,
 ): void => {};
 
 export default playerRoute;
