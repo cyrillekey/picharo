@@ -68,4 +68,7 @@ declare module "fastify" {
   interface FastifyInstance {
     userCache: UserCache;
   }
+  interface FastifyRequest {
+    user: UserDetails;
+  }
 }

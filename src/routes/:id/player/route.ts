@@ -1,3 +1,4 @@
+import { isRequestValidated } from "@/hooks";
 import { type PlayerExtraArgs } from "@/type";
 import { decodeSearchString } from "@/utils/shared";
 import type { FastifyPluginCallbackJsonSchemaToTs } from "@fastify/type-provider-json-schema-to-ts";
@@ -9,6 +10,7 @@ const playerRoute: FastifyPluginCallbackJsonSchemaToTs = (
   fastify.all(
     "/:type/:videoID:/:extraArgs.json",
     {
+      preHandler: isRequestValidated,
       schema: {
         consumes: ["application/json"],
         produces: ["application/json"],
