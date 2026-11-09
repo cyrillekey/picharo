@@ -1,3 +1,5 @@
+import { type LibraryExtraArgs } from "@/type";
+import { decodeSearchString } from "@/utils/shared";
 import type { FastifyPluginCallbackJsonSchemaToTs } from "@fastify/type-provider-json-schema-to-ts";
 
 const libraryRoute: FastifyPluginCallbackJsonSchemaToTs = (
@@ -43,12 +45,30 @@ const libraryRoute: FastifyPluginCallbackJsonSchemaToTs = (
               type: "string",
             },
           },
+          required: ["id", "type", "videoID", "extraArgs"],
         },
       },
     },
     async (req, _reply) => {
       try {
+        const params = decodeSearchString<LibraryExtraArgs>(
+          req.params.extraArgs ?? "",
+        );
+        await fastify.events.queue.add("library.event", {
+          name: "library.event",
+          payload: {
+            type: req.params.type,
+            userId: req.params.id,
+            videoId: req.params.videoID,
+            args: params,
+          },
+          occurredAt: new Date().toISOString(),
+        });
         // TODO: resolve the requested library item.
+        return {
+          success: true,
+          message: "Success! Library action recorded",
+        };
       } catch (error) {
         req.log.error(error);
         return {

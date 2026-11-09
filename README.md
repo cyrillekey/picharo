@@ -85,6 +85,20 @@ To add a new event:
    [`src/consumers/events.ts`](./src/consumers/events.ts), or pass a `handlers`
    override to `createEventsWorker`.
 
+### User cache
+
+The `user-cache` plugin exposes `fastify.userCache.getById(id)`. On a cache
+miss it loads the user's scalar fields from the database and stores them for up
+to 24 hours, with a maximum of 1000 users in the LRU cache. Relations such as
+`watchHistory` are never cached.
+
+```ts
+const user = await fastify.userCache.getById(id);
+```
+
+Call `fastify.userCache.invalidate(id)` after updating a user so the next lookup
+reads fresh data from the database.
+
 ### Database
 
 The auth routes rely on the `EmailVerificationToken` and `PasswordResetToken`

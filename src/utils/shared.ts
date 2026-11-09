@@ -15,3 +15,13 @@ export const baseManifest = {
   types: ["catalog"],
   description: "Picharo better catalogsƒ",
 };
+
+export function decodeSearchString<T>(searchString: string): T {
+  const params = Object.fromEntries(
+    [...new URLSearchParams(searchString)].map(([key, value]) => [
+      key,
+      value.trim() !== "" && !isNaN(Number(value)) ? Number(value) : value,
+    ]),
+  ) as T;
+  return params;
+}

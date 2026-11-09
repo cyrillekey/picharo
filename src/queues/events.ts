@@ -1,20 +1,22 @@
+import type { LibraryExtraArgs, PlayerExtraArgs } from "@/type";
+
 // Name of the BullMQ queue that carries application events.
 export const EVENTS_QUEUE = "events";
 
 // Every event that can be produced or consumed by the app.
 // Add a new entry here and a matching handler in `src/consumers/events.ts`.
 export interface EventPayloads {
-  "user.created": {
+  "library.event": {
     userId: string;
-    email: string;
+    type: "tv" | "movie" | "series" | "channel";
+    videoId: string;
+    args?: LibraryExtraArgs;
   };
-  "user.email-verified": {
+  "player.event": {
     userId: string;
-    email: string;
-  };
-  "user.password-reset-requested": {
-    userId: string;
-    email: string;
+    type: "tv" | "movie" | "series" | "channel";
+    videoId: string;
+    args?: PlayerExtraArgs;
   };
 }
 

@@ -1,7 +1,7 @@
 import fp from "fastify-plugin";
 import nodemailer from "nodemailer";
 import type { Transporter } from "nodemailer";
-import { config } from "../config.js";
+import { config } from "../config/index.js";
 
 export interface EmailMessage {
   to: string;

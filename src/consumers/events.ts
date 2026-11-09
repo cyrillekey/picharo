@@ -1,5 +1,5 @@
 import { Worker, type ConnectionOptions, type Job } from "bullmq";
-import { config } from "../config.js";
+import { config } from "../config/index.js";
 import {
   configureRedisClientFactory,
   redisConnectionOptions,
@@ -27,15 +27,8 @@ export interface EventsLogger {
 
 // Replace these with the real side effects for each event.
 export const defaultEventHandlers: EventHandlers = {
-  "user.created": async () => {
-    // TODO: send a welcome email or provision defaults for the new account.
-  },
-  "user.email-verified": async () => {
-    // TODO: run the actions that should follow email verification.
-  },
-  "user.password-reset-requested": async () => {
-    // TODO: notify the user or record the request.
-  },
+  "library.event": async () => {},
+  "player.event": async () => {},
 };
 
 export interface EventsWorkerOptions {

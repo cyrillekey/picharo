@@ -4,7 +4,7 @@ import {
   type RedisOptions,
 } from "bullmq";
 import { Redis } from "ioredis";
-import { config } from "../config.js";
+import { config } from "../config/index.js";
 
 let clientFactoryConfigured = false;
 

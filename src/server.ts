@@ -7,6 +7,9 @@ import Fastify from "fastify";
 // Require library to exit fastify process, gracefully (if possible)
 import closeWithGrace from "close-with-grace";
 import fastifyApp from "./app.js";
+import { createEventsWorker } from "./consumers/events.js";
+import { EVENTS_QUEUE } from "./queues/events.js";
+import { config } from "./config/index.js";
 dotenv.config();
 
 // Instantiate Fastify with some config
@@ -16,7 +19,12 @@ const app = Fastify({
 
 // Register your application as a normal plugin.
 app.register(fastifyApp);
-
+const worker = createEventsWorker();
+worker.on("ready", () => {
+  console.info(
+    `[events] worker ready for "${EVENTS_QUEUE}" (concurrency: ${config.queue.concurrency})`,
+  );
+});
 // delay is the number of milliseconds for the graceful close to finish
 closeWithGrace(
   { delay: Number(process.env.FASTIFY_CLOSE_GRACE_DELAY || 500) },
@@ -24,6 +32,7 @@ closeWithGrace(
     if (err) {
       app.log.error(err);
     }
+    await worker.close();
     await app.close();
   } as closeWithGrace.CloseWithGraceAsyncCallback,
 );

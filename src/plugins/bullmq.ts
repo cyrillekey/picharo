@@ -5,7 +5,7 @@ import {
   type Job,
   type JobsOptions,
 } from "bullmq";
-import { config } from "../config.js";
+import { config } from "../config/index.js";
 import {
   configureRedisClientFactory,
   redisConnectionOptions,
