@@ -23,7 +23,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'4aa4c8c76084eb54245e4974cfe0c1e22c91a6826c555ff6dd18bdd8bcdbf587'>;
+  StorageHashBase<'c62f5366e5437b1cd1fd67e27ef9ef7df823dc7037a7fff8d619fb78d41a16dc'>;
 export type ExecutionHash =
   ExecutionHashBase<'d7e04429a937d8f036ba55ab4cc68f14f9ff9190a4a099f8bdfad463edce8e20'>;
 export type ProfileHash =
@@ -567,13 +567,19 @@ type ContractBase = Omit<
                   readonly columns: readonly ['genreId'];
                   readonly unique: false;
                 },
+                {
+                  readonly name: 'moviegenre_movieId_idx_8cb9f9db';
+                  readonly prefix: 'moviegenre_movieId_idx';
+                  readonly columns: readonly ['movieId'];
+                  readonly unique: false;
+                },
               ];
               foreignKeys: readonly [
                 {
                   readonly source: {
                     readonly namespaceId: 'public' & NamespaceId;
                     readonly tableName: 'moviegenre';
-                    readonly columns: readonly ['genreId'];
+                    readonly columns: readonly ['movieId'];
                   };
                   readonly target: {
                     readonly namespaceId: 'public' & NamespaceId;
@@ -892,7 +898,7 @@ type ContractBase = Omit<
                 readonly cardinality: '1:N';
                 readonly on: {
                   readonly localFields: readonly ['id'];
-                  readonly targetFields: readonly ['genreId'];
+                  readonly targetFields: readonly ['movieId'];
                 };
               };
               readonly watchHistory: {
@@ -978,7 +984,7 @@ type ContractBase = Omit<
                 readonly cardinality: 'N:1';
                 readonly nullable: false;
                 readonly on: {
-                  readonly localFields: readonly ['genreId'];
+                  readonly localFields: readonly ['movieId'];
                   readonly targetFields: readonly ['id'];
                 };
               };

@@ -13,6 +13,25 @@ model User {
   @@map("users")
 }
 
+model Movie {
+  id               Int                @id @default(autoincrement())
+  title            Text
+  description      Text
+  popularity       Float
+  averagevote      Decimal
+  releaseDate      String
+  mediaType        String
+  originalLanguage String
+  languages        String[]
+  externalId       String
+  genres           MovieGenre[]       @relation(name: "moviegenrerelationship",)
+  watchHistory     WatchHistory[]
+  createdat        DateTime           @default(now()) @onCreate(now())
+  updatedat        temporal.UpdatedAt
+
+  @@map("movie")
+}
+
 model WatchHistory {
   id        Int                @default(autoincrement()) @id
   movieId   Int
@@ -25,46 +44,27 @@ model WatchHistory {
   @@map("watchhistory")
 }
 
-model Movie {
-  id               Int                @id @default(autoincrement())
-  title            Text
-  description      Text
-  popularity       Float
-  averagevote      Decimal
-  releaseDate      String
-  mediaType        String
-  originalLanguage String
-  languages        String[]
-  externalId       String
-  genres           MovieGenre[]
-  watchHistory     WatchHistory[]
-  createdat        DateTime           @default(now()) @onCreate(now())
-  updatedat        temporal.UpdatedAt
+model Genre {
+  // Fields
+  id        Int                @id
+  name      String
+  movies    MovieGenre[]       @relation(name: "genremovierelationship")
+  createdat DateTime           @default(now()) @onCreate(now())
+  updatedat temporal.UpdatedAt
 
-  @@map("movie")
+  @@map("genre")
 }
 
 model MovieGenre {
   // Fields
   id        Int                @id @default(autoincrement())
-  movie     Movie              @relation(fields: [genreId], references: [id], onDelete: Cascade)
+  movie     Movie              @relation(name: "moviegenrerelationship", fields: [movieId], references: [id], onDelete: Cascade)
   movieId   Int
-  genre     Genre              @relation(fields: [genreId], references: [id], onDelete: Cascade)
+  genre     Genre              @relation(name: "genremovierelationship", fields: [genreId], references: [id], onDelete: Cascade)
   genreId   Int
   createdat DateTime           @default(now()) @onCreate(now())
   updatedat temporal.UpdatedAt
 
-  @@map("moviegenre")
   @@unique([movieId, genreId])
-}
-
-model Genre {
-  // Fields
-  id        Int                @id
-  name      String
-  movies    MovieGenre[]
-  createdat DateTime           @default(now()) @onCreate(now())
-  updatedat temporal.UpdatedAt
-
-  @@map("genre")
+  @@map("moviegenre")
 }

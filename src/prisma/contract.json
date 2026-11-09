@@ -206,7 +206,7 @@
                     "id"
                   ],
                   "targetFields": [
-                    "genreId"
+                    "movieId"
                   ]
                 },
                 "to": {
@@ -339,7 +339,7 @@
                 "nullable": false,
                 "on": {
                   "localFields": [
-                    "genreId"
+                    "movieId"
                   ],
                   "targetFields": [
                     "id"
@@ -778,12 +778,12 @@
               "foreignKeys": [
                 {
                   "index": {
-                    "name": "moviegenre_genreId_idx_8fce6a7b"
+                    "name": "moviegenre_movieId_idx_8cb9f9db"
                   },
                   "onDelete": "cascade",
                   "source": {
                     "columns": [
-                      "genreId"
+                      "movieId"
                     ],
                     "namespaceId": "public",
                     "tableName": "moviegenre"
@@ -824,6 +824,14 @@
                   ],
                   "name": "moviegenre_genreId_idx_8fce6a7b",
                   "prefix": "moviegenre_genreId_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "movieId"
+                  ],
+                  "name": "moviegenre_movieId_idx_8cb9f9db",
+                  "prefix": "moviegenre_movieId_idx",
                   "unique": false
                 }
               ],
@@ -1032,7 +1040,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "4aa4c8c76084eb54245e4974cfe0c1e22c91a6826c555ff6dd18bdd8bcdbf587"
+    "storageHash": "c62f5366e5437b1cd1fd67e27ef9ef7df823dc7037a7fff8d619fb78d41a16dc"
   },
   "execution": {
     "executionHash": "d7e04429a937d8f036ba55ab4cc68f14f9ff9190a4a099f8bdfad463edce8e20",
