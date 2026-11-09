@@ -1,7 +1,6 @@
 import fp from "fastify-plugin";
 import { LRUCache } from "lru-cache";
 import type { Models } from "../prisma/contract.d";
-import { db } from "../prisma/db.js";
 
 const USER_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 const USER_CACHE_MAX_ITEMS = 1000;
@@ -46,7 +45,7 @@ export default fp(async (fastify) => {
         return cached;
       }
 
-      const user = await db.orm.public.User.where({ id })
+      const user = await fastify.library.db.orm.public.User.where({ id })
         .select(...userDetailFields)
         .first();
 
