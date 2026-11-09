@@ -19,7 +19,7 @@ const app = Fastify({
 
 // Register your application as a normal plugin.
 app.register(fastifyApp);
-const worker = createEventsWorker();
+const worker = createEventsWorker(app);
 worker.on("ready", () => {
   console.info(
     `[events] worker ready for "${EVENTS_QUEUE}" (concurrency: ${config.queue.concurrency})`,

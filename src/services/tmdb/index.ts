@@ -66,7 +66,8 @@ class TMDBClient {
         shallow.id,
         shallow.media_type,
       );
-      return details;
+      if (details) return { ...details, mediad_type: shallow.media_type };
+      return null;
     } catch (error) {
       this.app.log.error(error);
       return null;

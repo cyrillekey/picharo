@@ -18,12 +18,12 @@ model Movie {
   title            Text
   description      Text
   popularity       Float
-  averagevote      Decimal
+  averagevote      Float
   releaseDate      String
   mediaType        String
   originalLanguage String
   languages        String[]
-  externalId       String
+  externalId       String             @unique
   genres           MovieGenre[]       @relation(name: "moviegenrerelationship",)
   watchHistory     WatchHistory[]
   createdat        DateTime           @default(now()) @onCreate(now())
@@ -35,6 +35,8 @@ model Movie {
 model WatchHistory {
   id        Int                @default(autoincrement()) @id
   movieId   Int
+  date      Date               @default(now())
+  status    WatchStatus        @default(PARTIAL)
   movie     Movie              @relation(fields: [movieId], references: [id], onDelete: Cascade)
   userId    String
   user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -67,4 +69,9 @@ model MovieGenre {
 
   @@unique([movieId, genreId])
   @@map("moviegenre")
+}
+
+enum WatchStatus {
+  FULL = "full"
+  PARTIAL = "partial"
 }

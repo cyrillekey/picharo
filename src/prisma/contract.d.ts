@@ -23,7 +23,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'c62f5366e5437b1cd1fd67e27ef9ef7df823dc7037a7fff8d619fb78d41a16dc'>;
+  StorageHashBase<'a27a7629e277cd00b2274c14642403a4579aaff1e4a4d96362e71f639718469c'>;
 export type ExecutionHash =
   ExecutionHashBase<'d7e04429a937d8f036ba55ab4cc68f14f9ff9190a4a099f8bdfad463edce8e20'>;
 export type ProfileHash =
@@ -275,7 +275,18 @@ type DefaultLiteralValue<CodecId extends string, Encoded> = CodecId extends keyo
   : Encoded;
 type ParameterizedOutputTypeFunctions = PgParameterizedOutputTypes;
 
-type FieldTypeOverrides = {};
+type FieldTypeOverrides = {
+  readonly public: {
+    readonly models: {
+      readonly WatchHistory: {
+        readonly status: {
+          readonly output: 'full' | 'partial';
+          readonly input: 'full' | 'partial';
+        };
+      };
+    };
+  };
+};
 export type FieldOutputTypes = FieldTypesFromDomain<
   ContractBase['domain']['namespaces'],
   CodecTypes,
@@ -292,7 +303,13 @@ export type FieldInputTypes = FieldTypesFromDomain<
   'input',
   ContractBase['storage']['namespaces']
 >;
-type ColumnTypeOverrides = {};
+type ColumnTypeOverrides = {
+  readonly public: {
+    readonly watchhistory: {
+      readonly status: { readonly output: 'full' | 'partial'; readonly input: 'full' | 'partial' };
+    };
+  };
+};
 export type StorageColumnTypes = ColumnTypesFromStorage<
   ContractBase['storage'],
   CodecTypes,
@@ -358,8 +375,10 @@ export namespace Models {
   };
   export type public_WatchHistory = {
     createdat: FieldOutputTypes['public']['WatchHistory']['createdat'];
+    date: FieldOutputTypes['public']['WatchHistory']['date'];
     id: FieldOutputTypes['public']['WatchHistory']['id'];
     movieId: FieldOutputTypes['public']['WatchHistory']['movieId'];
+    status: FieldOutputTypes['public']['WatchHistory']['status'];
     updatedat: FieldOutputTypes['public']['WatchHistory']['updatedat'];
     userId: FieldOutputTypes['public']['WatchHistory']['userId'];
     movie: public_Movie;
@@ -434,8 +453,8 @@ type ContractBase = Omit<
             readonly movie: {
               columns: {
                 readonly averagevote: {
-                  readonly dataType: 'pg/numeric';
-                  readonly codecId: 'pg/numeric@1';
+                  readonly dataType: 'pg/float8';
+                  readonly codecId: 'pg/float8@1';
                   readonly nullable: false;
                   readonly many: false;
                 };
@@ -514,7 +533,7 @@ type ContractBase = Omit<
                 };
               };
               primaryKey: { readonly columns: readonly ['id'] };
-              uniques: readonly [];
+              uniques: readonly [{ readonly columns: readonly ['externalId'] }];
               indexes: readonly [];
               foreignKeys: readonly [];
             };
@@ -678,6 +697,13 @@ type ContractBase = Omit<
                   readonly typeParams: { readonly precision: 3 };
                   readonly many: false;
                 };
+                readonly date: {
+                  readonly dataType: 'pg/date';
+                  readonly codecId: 'pg/date-string@1';
+                  readonly nullable: false;
+                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
+                  readonly many: false;
+                };
                 readonly id: {
                   readonly dataType: 'pg/int4';
                   readonly codecId: 'pg/int4@1';
@@ -692,6 +718,16 @@ type ContractBase = Omit<
                   readonly dataType: 'pg/int4';
                   readonly codecId: 'pg/int4@1';
                   readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly status: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/text@1', 'partial'>;
+                  };
                   readonly many: false;
                 };
                 readonly updatedat: {
@@ -750,6 +786,12 @@ type ContractBase = Omit<
                   };
                 },
               ];
+            };
+          };
+          readonly valueSet: {
+            readonly WatchStatus: {
+              readonly kind: 'valueSet';
+              readonly values: readonly ['full', 'partial'];
             };
           };
         };
@@ -833,7 +875,7 @@ type ContractBase = Omit<
             readonly fields: {
               readonly averagevote: {
                 readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/numeric@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/float8@1' };
               };
               readonly createdat: {
                 readonly nullable: false;
@@ -1082,6 +1124,10 @@ type ContractBase = Omit<
                   readonly typeParams: { readonly precision: 3 };
                 };
               };
+              readonly date: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/date-string@1' };
+              };
               readonly id: {
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
@@ -1089,6 +1135,10 @@ type ContractBase = Omit<
               readonly movieId: {
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+              readonly status: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
               readonly updatedat: {
                 readonly nullable: false;
@@ -1131,13 +1181,30 @@ type ContractBase = Omit<
               readonly namespaceId: 'public';
               readonly fields: {
                 readonly createdat: { readonly column: 'createdat' };
+                readonly date: { readonly column: 'date' };
                 readonly id: { readonly column: 'id' };
                 readonly movieId: { readonly column: 'movieId' };
+                readonly status: { readonly column: 'status' };
                 readonly updatedat: { readonly column: 'updatedat' };
                 readonly userId: { readonly column: 'userId' };
               };
             };
           };
+        };
+        readonly enum: {
+          readonly WatchStatus: {
+            readonly codecId: 'pg/text@1';
+            readonly members: readonly [
+              { readonly name: 'FULL'; readonly value: 'full' },
+              { readonly name: 'PARTIAL'; readonly value: 'partial' },
+            ];
+          };
+        };
+        readonly enumMemberTypes?: {
+          readonly WatchStatus: readonly [
+            { readonly name: 'FULL'; readonly value: 'full' },
+            { readonly name: 'PARTIAL'; readonly value: 'partial' },
+          ];
         };
       };
     };

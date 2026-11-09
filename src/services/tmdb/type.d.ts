@@ -42,7 +42,7 @@ export interface MovieDetails {
   poster_path: string;
   production_companies: ProductionCompany[];
   production_countries: ProductionCountry[];
-  release_date: Date;
+  release_date: string;
   revenue: number;
   runtime: number;
   softcore: boolean;
@@ -53,6 +53,7 @@ export interface MovieDetails {
   video: boolean;
   vote_average: number;
   vote_count: number;
+  mediad_type?: string;
 }
 
 export interface Genre {
