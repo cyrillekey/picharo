@@ -7,6 +7,7 @@ model User {
   bio           String
   emailVerified Boolean            @default(false)
   watchHistory  WatchHistory[]
+  watchlist     WatchList[]
   createdat     DateTime           @default(now()) @onCreate(now())
   updatedat     temporal.UpdatedAt
 
@@ -14,7 +15,7 @@ model User {
 }
 
 model Movie {
-  id               Int                @id @default(autoincrement())
+  id               Int                @id
   title            Text
   description      Text
   popularity       Float
@@ -26,6 +27,7 @@ model Movie {
   externalId       String             @unique
   genres           MovieGenre[]       @relation(name: "moviegenrerelationship",)
   watchHistory     WatchHistory[]
+  watchlists       WatchList[]
   createdat        DateTime           @default(now()) @onCreate(now())
   updatedat        temporal.UpdatedAt
 
@@ -33,17 +35,35 @@ model Movie {
 }
 
 model WatchHistory {
-  id        Int                @default(autoincrement()) @id
-  movieId   Int
-  date      Date               @default(now())
-  status    WatchStatus        @default(PARTIAL)
-  movie     Movie              @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  id              Int                @default(autoincrement()) @id
+  movieId         Int
+  startDate       Date               @default(now())
+  endDate         Date?
+  status          WatchStatus        @default(PARTIAL)
+  movie           Movie              @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  userId          String
+  duration        Int                @default(1)
+  watchedDuration Int                @default(1)
+  pausecount      Int                @default(0)
+  user            User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdat       DateTime           @default(now()) @onCreate(now())
+  updatedat       temporal.UpdatedAt
+
+  @@unique([movieId, userId])
+  @@map("watchhistory")
+}
+
+model WatchList {
+  id        Int                @id @default(autoincrement())
   userId    String
   user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  movieId   Int
+  movie     Movie              @relation(fields: [movieId], references: [id], onDelete: Cascade)
   createdat DateTime           @default(now()) @onCreate(now())
   updatedat temporal.UpdatedAt
 
-  @@map("watchhistory")
+  @@unique([movieId, userId])
+  @@map("watchlist")
 }
 
 model Genre {

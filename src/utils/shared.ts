@@ -12,8 +12,9 @@ export const baseManifest = {
   },
   catalogs: [],
   resources: ["catalog", "library", "player"],
-  types: ["catalog"],
+  types: ["movie", "series"],
   description: "Picharo better catalogsƒ",
+  idPrefixes: ["tt"],
 };
 
 export function decodeSearchString<T>(searchString: string): T {

@@ -23,6 +23,10 @@
     "watchhistory": {
       "model": "WatchHistory",
       "namespace": "public"
+    },
+    "watchlist": {
+      "model": "WatchList",
+      "namespace": "public"
     }
   },
   "domain": {
@@ -241,6 +245,21 @@
                 },
                 "to": {
                   "model": "WatchHistory",
+                  "namespace": "public"
+                }
+              },
+              "watchlists": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "movieId"
+                  ]
+                },
+                "to": {
+                  "model": "WatchList",
                   "namespace": "public"
                 }
               }
@@ -468,6 +487,21 @@
                   "model": "WatchHistory",
                   "namespace": "public"
                 }
+              },
+              "watchlist": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "userId"
+                  ]
+                },
+                "to": {
+                  "model": "WatchList",
+                  "namespace": "public"
+                }
               }
             },
             "storage": {
@@ -513,8 +547,15 @@
                   }
                 }
               },
-              "date": {
+              "duration": {
                 "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "endDate": {
+                "nullable": true,
                 "type": {
                   "codecId": "pg/date-string@1",
                   "kind": "scalar"
@@ -534,6 +575,20 @@
                   "kind": "scalar"
                 }
               },
+              "pausecount": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "startDate": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/date-string@1",
+                  "kind": "scalar"
+                }
+              },
               "status": {
                 "nullable": false,
                 "type": {
@@ -545,6 +600,131 @@
                   "entityName": "WatchStatus",
                   "namespaceId": "public",
                   "plane": "domain"
+                }
+              },
+              "updatedat": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "userId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "watchedDuration": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "movie": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "movieId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Movie",
+                  "namespace": "public"
+                }
+              },
+              "user": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "userId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "User",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "createdat": {
+                  "column": "createdat"
+                },
+                "duration": {
+                  "column": "duration"
+                },
+                "endDate": {
+                  "column": "endDate"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "movieId": {
+                  "column": "movieId"
+                },
+                "pausecount": {
+                  "column": "pausecount"
+                },
+                "startDate": {
+                  "column": "startDate"
+                },
+                "status": {
+                  "column": "status"
+                },
+                "updatedat": {
+                  "column": "updatedat"
+                },
+                "userId": {
+                  "column": "userId"
+                },
+                "watchedDuration": {
+                  "column": "watchedDuration"
+                }
+              },
+              "namespaceId": "public",
+              "table": "watchhistory"
+            }
+          },
+          "WatchList": {
+            "fields": {
+              "createdat": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "movieId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
                 }
               },
               "updatedat": {
@@ -604,17 +784,11 @@
                 "createdat": {
                   "column": "createdat"
                 },
-                "date": {
-                  "column": "date"
-                },
                 "id": {
                   "column": "id"
                 },
                 "movieId": {
                   "column": "movieId"
-                },
-                "status": {
-                  "column": "status"
                 },
                 "updatedat": {
                   "column": "updatedat"
@@ -624,7 +798,7 @@
                 }
               },
               "namespaceId": "public",
-              "table": "watchhistory"
+              "table": "watchlist"
             }
           }
         }
@@ -717,10 +891,6 @@
                 "id": {
                   "codecId": "pg/int4@1",
                   "dataType": "pg/int4",
-                  "default": {
-                    "expression": "autoincrement()",
-                    "kind": "function"
-                  },
                   "nullable": false
                 },
                 "languages": {
@@ -993,14 +1163,19 @@
                     "precision": 3
                   }
                 },
-                "date": {
-                  "codecId": "pg/date-string@1",
-                  "dataType": "pg/date",
+                "duration": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
                   "default": {
-                    "expression": "now()",
-                    "kind": "function"
+                    "kind": "literal",
+                    "value": 1
                   },
                   "nullable": false
+                },
+                "endDate": {
+                  "codecId": "pg/date-string@1",
+                  "dataType": "pg/date",
+                  "nullable": true
                 },
                 "id": {
                   "codecId": "pg/int4@1",
@@ -1014,6 +1189,24 @@
                 "movieId": {
                   "codecId": "pg/int4@1",
                   "dataType": "pg/int4",
+                  "nullable": false
+                },
+                "pausecount": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "default": {
+                    "kind": "literal",
+                    "value": 0
+                  },
+                  "nullable": false
+                },
+                "startDate": {
+                  "codecId": "pg/date-string@1",
+                  "dataType": "pg/date",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
                   "nullable": false
                 },
                 "status": {
@@ -1042,6 +1235,15 @@
                 "userId": {
                   "codecId": "pg/text@1",
                   "dataType": "pg/text",
+                  "nullable": false
+                },
+                "watchedDuration": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "default": {
+                    "kind": "literal",
+                    "value": 1
+                  },
                   "nullable": false
                 }
               },
@@ -1110,7 +1312,130 @@
                   "id"
                 ]
               },
-              "uniques": []
+              "uniques": [
+                {
+                  "columns": [
+                    "movieId",
+                    "userId"
+                  ]
+                }
+              ]
+            },
+            "watchlist": {
+              "columns": {
+                "createdat": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                },
+                "id": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "default": {
+                    "expression": "autoincrement()",
+                    "kind": "function"
+                  },
+                  "nullable": false
+                },
+                "movieId": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "nullable": false
+                },
+                "updatedat": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                },
+                "userId": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [
+                {
+                  "index": {
+                    "name": "watchlist_userId_idx_a489d58a"
+                  },
+                  "onDelete": "cascade",
+                  "source": {
+                    "columns": [
+                      "userId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "watchlist"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "users"
+                  }
+                },
+                {
+                  "index": {
+                    "name": "watchlist_movieId_idx_8cb9f9db"
+                  },
+                  "onDelete": "cascade",
+                  "source": {
+                    "columns": [
+                      "movieId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "watchlist"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "movie"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "movieId"
+                  ],
+                  "name": "watchlist_movieId_idx_8cb9f9db",
+                  "prefix": "watchlist_movieId_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "userId"
+                  ],
+                  "name": "watchlist_userId_idx_a489d58a",
+                  "prefix": "watchlist_userId_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": [
+                {
+                  "columns": [
+                    "movieId",
+                    "userId"
+                  ]
+                }
+              ]
             }
           },
           "valueSet": {
@@ -1127,10 +1452,10 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "a27a7629e277cd00b2274c14642403a4579aaff1e4a4d96362e71f639718469c"
+    "storageHash": "a7107090631548064e5034e7c8cd8964f877e368156e34c74d08cee533c5cd40"
   },
   "execution": {
-    "executionHash": "d7e04429a937d8f036ba55ab4cc68f14f9ff9190a4a099f8bdfad463edce8e20",
+    "executionHash": "034ceb315de38386a4b7d07a73d6a73145c0750f2683b0f4604958845e57fdb8",
     "mutations": {
       "defaults": [
         {
@@ -1304,6 +1629,41 @@
           },
           "ref": {
             "entry": "watchhistory",
+            "field": "updatedat",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "ref": {
+            "entry": "watchlist",
+            "field": "createdat",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "onUpdate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "ref": {
+            "entry": "watchlist",
             "field": "updatedat",
             "namespace": "public"
           }

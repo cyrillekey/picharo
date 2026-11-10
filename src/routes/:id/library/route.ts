@@ -56,17 +56,17 @@ const libraryRoute: FastifyPluginCallbackJsonSchemaToTs = (
         const params = decodeSearchString<LibraryExtraArgs>(
           req.params.extraArgs ?? "",
         );
-        await fastify.events.queue.add("library.event", {
-          name: "library.event",
-          payload: {
-            type: req.params.type,
-            userId: req.params.id,
-            videoId: req.params.videoID,
-            args: params,
-          },
-          occurredAt: new Date().toISOString(),
-        });
-        // TODO: resolve the requested library item.
+        if (fastify.library.helpers.validateVideoId(req.params.videoID))
+          await fastify.events.queue.add("library.event", {
+            name: "library.event",
+            payload: {
+              type: req.params.type,
+              userId: req.params.id,
+              videoId: req.params.videoID,
+              args: params,
+            },
+            occurredAt: new Date().toISOString(),
+          });
         return {
           success: true,
           message: "Success! Library action recorded",

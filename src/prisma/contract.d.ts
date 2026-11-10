@@ -23,9 +23,9 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'a27a7629e277cd00b2274c14642403a4579aaff1e4a4d96362e71f639718469c'>;
+  StorageHashBase<'a7107090631548064e5034e7c8cd8964f877e368156e34c74d08cee533c5cd40'>;
 export type ExecutionHash =
-  ExecutionHashBase<'d7e04429a937d8f036ba55ab4cc68f14f9ff9190a4a099f8bdfad463edce8e20'>;
+  ExecutionHashBase<'034ceb315de38386a4b7d07a73d6a73145c0750f2683b0f4604958845e57fdb8'>;
 export type ProfileHash =
   ProfileHashBase<'3916f444a8a17ad749191acf9e08dad97d1a327b88c2f1d45d12f240296aa8b2'>;
 
@@ -349,7 +349,8 @@ export namespace Models {
     updatedat: FieldOutputTypes['public']['Movie']['updatedat'];
     genres: public_MovieGenre[];
     watchHistory: public_WatchHistory[];
-    readonly [RelationKeys]?: 'genres' | 'watchHistory';
+    watchlists: public_WatchList[];
+    readonly [RelationKeys]?: 'genres' | 'watchHistory' | 'watchlists';
   };
   export type public_MovieGenre = {
     createdat: FieldOutputTypes['public']['MovieGenre']['createdat'];
@@ -371,16 +372,31 @@ export namespace Models {
     password: FieldOutputTypes['public']['User']['password'];
     updatedat: FieldOutputTypes['public']['User']['updatedat'];
     watchHistory: public_WatchHistory[];
-    readonly [RelationKeys]?: 'watchHistory';
+    watchlist: public_WatchList[];
+    readonly [RelationKeys]?: 'watchHistory' | 'watchlist';
   };
   export type public_WatchHistory = {
     createdat: FieldOutputTypes['public']['WatchHistory']['createdat'];
-    date: FieldOutputTypes['public']['WatchHistory']['date'];
+    duration: FieldOutputTypes['public']['WatchHistory']['duration'];
+    endDate: FieldOutputTypes['public']['WatchHistory']['endDate'];
     id: FieldOutputTypes['public']['WatchHistory']['id'];
     movieId: FieldOutputTypes['public']['WatchHistory']['movieId'];
+    pausecount: FieldOutputTypes['public']['WatchHistory']['pausecount'];
+    startDate: FieldOutputTypes['public']['WatchHistory']['startDate'];
     status: FieldOutputTypes['public']['WatchHistory']['status'];
     updatedat: FieldOutputTypes['public']['WatchHistory']['updatedat'];
     userId: FieldOutputTypes['public']['WatchHistory']['userId'];
+    watchedDuration: FieldOutputTypes['public']['WatchHistory']['watchedDuration'];
+    movie: public_Movie;
+    user: public_User;
+    readonly [RelationKeys]?: 'movie' | 'user';
+  };
+  export type public_WatchList = {
+    createdat: FieldOutputTypes['public']['WatchList']['createdat'];
+    id: FieldOutputTypes['public']['WatchList']['id'];
+    movieId: FieldOutputTypes['public']['WatchList']['movieId'];
+    updatedat: FieldOutputTypes['public']['WatchList']['updatedat'];
+    userId: FieldOutputTypes['public']['WatchList']['userId'];
     movie: public_Movie;
     user: public_User;
     readonly [RelationKeys]?: 'movie' | 'user';
@@ -394,6 +410,7 @@ export declare const models: {
     MovieGenre: Models.public_MovieGenre;
     User: Models.public_User;
     WatchHistory: Models.public_WatchHistory;
+    WatchList: Models.public_WatchList;
   };
 };
 
@@ -482,10 +499,6 @@ type ContractBase = Omit<
                   readonly dataType: 'pg/int4';
                   readonly codecId: 'pg/int4@1';
                   readonly nullable: false;
-                  readonly default: {
-                    readonly kind: 'function';
-                    readonly expression: 'autoincrement()';
-                  };
                   readonly many: false;
                 };
                 readonly languages: {
@@ -697,11 +710,20 @@ type ContractBase = Omit<
                   readonly typeParams: { readonly precision: 3 };
                   readonly many: false;
                 };
-                readonly date: {
+                readonly duration: {
+                  readonly dataType: 'pg/int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/int4@1', 1>;
+                  };
+                  readonly many: false;
+                };
+                readonly endDate: {
                   readonly dataType: 'pg/date';
                   readonly codecId: 'pg/date-string@1';
-                  readonly nullable: false;
-                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
+                  readonly nullable: true;
                   readonly many: false;
                 };
                 readonly id: {
@@ -718,6 +740,23 @@ type ContractBase = Omit<
                   readonly dataType: 'pg/int4';
                   readonly codecId: 'pg/int4@1';
                   readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly pausecount: {
+                  readonly dataType: 'pg/int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/int4@1', 0>;
+                  };
+                  readonly many: false;
+                };
+                readonly startDate: {
+                  readonly dataType: 'pg/date';
+                  readonly codecId: 'pg/date-string@1';
+                  readonly nullable: false;
+                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
                   readonly many: false;
                 };
                 readonly status: {
@@ -743,9 +782,19 @@ type ContractBase = Omit<
                   readonly nullable: false;
                   readonly many: false;
                 };
+                readonly watchedDuration: {
+                  readonly dataType: 'pg/int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/int4@1', 1>;
+                  };
+                  readonly many: false;
+                };
               };
               primaryKey: { readonly columns: readonly ['id'] };
-              uniques: readonly [];
+              uniques: readonly [{ readonly columns: readonly ['movieId', 'userId'] }];
               indexes: readonly [
                 {
                   readonly name: 'watchhistory_movieId_idx_8cb9f9db';
@@ -787,6 +836,89 @@ type ContractBase = Omit<
                 },
               ];
             };
+            readonly watchlist: {
+              columns: {
+                readonly createdat: {
+                  readonly dataType: 'pg/timestamptz';
+                  readonly codecId: 'pg/timestamptz-date@1';
+                  readonly nullable: false;
+                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
+                  readonly typeParams: { readonly precision: 3 };
+                  readonly many: false;
+                };
+                readonly id: {
+                  readonly dataType: 'pg/int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'function';
+                    readonly expression: 'autoincrement()';
+                  };
+                  readonly many: false;
+                };
+                readonly movieId: {
+                  readonly dataType: 'pg/int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly updatedat: {
+                  readonly dataType: 'pg/timestamptz';
+                  readonly codecId: 'pg/timestamptz-date@1';
+                  readonly nullable: false;
+                  readonly typeParams: { readonly precision: 3 };
+                  readonly many: false;
+                };
+                readonly userId: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
+              };
+              primaryKey: { readonly columns: readonly ['id'] };
+              uniques: readonly [{ readonly columns: readonly ['movieId', 'userId'] }];
+              indexes: readonly [
+                {
+                  readonly name: 'watchlist_movieId_idx_8cb9f9db';
+                  readonly prefix: 'watchlist_movieId_idx';
+                  readonly columns: readonly ['movieId'];
+                  readonly unique: false;
+                },
+                {
+                  readonly name: 'watchlist_userId_idx_a489d58a';
+                  readonly prefix: 'watchlist_userId_idx';
+                  readonly columns: readonly ['userId'];
+                  readonly unique: false;
+                },
+              ];
+              foreignKeys: readonly [
+                {
+                  readonly source: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'watchlist';
+                    readonly columns: readonly ['userId'];
+                  };
+                  readonly target: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'users';
+                    readonly columns: readonly ['id'];
+                  };
+                },
+                {
+                  readonly source: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'watchlist';
+                    readonly columns: readonly ['movieId'];
+                  };
+                  readonly target: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'movie';
+                    readonly columns: readonly ['id'];
+                  };
+                },
+              ];
+            };
           };
           readonly valueSet: {
             readonly WatchStatus: {
@@ -815,6 +947,7 @@ type ContractBase = Omit<
       readonly namespace: 'public' & NamespaceId;
       readonly model: 'WatchHistory';
     };
+    readonly watchlist: { readonly namespace: 'public' & NamespaceId; readonly model: 'WatchList' };
   };
   readonly domain: {
     readonly namespaces: {
@@ -947,6 +1080,17 @@ type ContractBase = Omit<
                 readonly to: {
                   readonly namespace: 'public' & NamespaceId;
                   readonly model: 'WatchHistory';
+                };
+                readonly cardinality: '1:N';
+                readonly on: {
+                  readonly localFields: readonly ['id'];
+                  readonly targetFields: readonly ['movieId'];
+                };
+              };
+              readonly watchlists: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'WatchList';
                 };
                 readonly cardinality: '1:N';
                 readonly on: {
@@ -1098,6 +1242,17 @@ type ContractBase = Omit<
                   readonly targetFields: readonly ['userId'];
                 };
               };
+              readonly watchlist: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'WatchList';
+                };
+                readonly cardinality: '1:N';
+                readonly on: {
+                  readonly localFields: readonly ['id'];
+                  readonly targetFields: readonly ['userId'];
+                };
+              };
             };
             readonly storage: {
               readonly table: 'users';
@@ -1124,8 +1279,12 @@ type ContractBase = Omit<
                   readonly typeParams: { readonly precision: 3 };
                 };
               };
-              readonly date: {
+              readonly duration: {
                 readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+              readonly endDate: {
+                readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/date-string@1' };
               };
               readonly id: {
@@ -1136,9 +1295,93 @@ type ContractBase = Omit<
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
               };
+              readonly pausecount: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+              readonly startDate: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/date-string@1' };
+              };
               readonly status: {
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly updatedat: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-date@1';
+                  readonly typeParams: { readonly precision: 3 };
+                };
+              };
+              readonly userId: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly watchedDuration: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+            };
+            readonly relations: {
+              readonly movie: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'Movie';
+                };
+                readonly cardinality: 'N:1';
+                readonly nullable: false;
+                readonly on: {
+                  readonly localFields: readonly ['movieId'];
+                  readonly targetFields: readonly ['id'];
+                };
+              };
+              readonly user: {
+                readonly to: { readonly namespace: 'public' & NamespaceId; readonly model: 'User' };
+                readonly cardinality: 'N:1';
+                readonly nullable: false;
+                readonly on: {
+                  readonly localFields: readonly ['userId'];
+                  readonly targetFields: readonly ['id'];
+                };
+              };
+            };
+            readonly storage: {
+              readonly table: 'watchhistory';
+              readonly namespaceId: 'public';
+              readonly fields: {
+                readonly createdat: { readonly column: 'createdat' };
+                readonly duration: { readonly column: 'duration' };
+                readonly endDate: { readonly column: 'endDate' };
+                readonly id: { readonly column: 'id' };
+                readonly movieId: { readonly column: 'movieId' };
+                readonly pausecount: { readonly column: 'pausecount' };
+                readonly startDate: { readonly column: 'startDate' };
+                readonly status: { readonly column: 'status' };
+                readonly updatedat: { readonly column: 'updatedat' };
+                readonly userId: { readonly column: 'userId' };
+                readonly watchedDuration: { readonly column: 'watchedDuration' };
+              };
+            };
+          };
+          readonly WatchList: {
+            readonly fields: {
+              readonly createdat: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-date@1';
+                  readonly typeParams: { readonly precision: 3 };
+                };
+              };
+              readonly id: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+              readonly movieId: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
               };
               readonly updatedat: {
                 readonly nullable: false;
@@ -1177,14 +1420,12 @@ type ContractBase = Omit<
               };
             };
             readonly storage: {
-              readonly table: 'watchhistory';
+              readonly table: 'watchlist';
               readonly namespaceId: 'public';
               readonly fields: {
                 readonly createdat: { readonly column: 'createdat' };
-                readonly date: { readonly column: 'date' };
                 readonly id: { readonly column: 'id' };
                 readonly movieId: { readonly column: 'movieId' };
-                readonly status: { readonly column: 'status' };
                 readonly updatedat: { readonly column: 'updatedat' };
                 readonly userId: { readonly column: 'userId' };
               };
@@ -1383,6 +1624,35 @@ type ContractBase = Omit<
           };
           readonly ref: {
             readonly entry: 'watchhistory';
+            readonly field: 'updatedat';
+            readonly namespace: 'public';
+          };
+        },
+        {
+          readonly onCreate: {
+            readonly id: 'timestampNow';
+            readonly kind: 'generator';
+            readonly params: { readonly precision: 3 };
+          };
+          readonly ref: {
+            readonly entry: 'watchlist';
+            readonly field: 'createdat';
+            readonly namespace: 'public';
+          };
+        },
+        {
+          readonly onCreate: {
+            readonly id: 'timestampNow';
+            readonly kind: 'generator';
+            readonly params: { readonly precision: 3 };
+          };
+          readonly onUpdate: {
+            readonly id: 'timestampNow';
+            readonly kind: 'generator';
+            readonly params: { readonly precision: 3 };
+          };
+          readonly ref: {
+            readonly entry: 'watchlist';
             readonly field: 'updatedat';
             readonly namespace: 'public';
           };

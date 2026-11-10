@@ -56,16 +56,17 @@ const playerRoute: FastifyPluginCallbackJsonSchemaToTs = (
         const params = decodeSearchString<PlayerExtraArgs>(
           req.params.extraArgs ?? "",
         );
-        await fastify.events.queue.add("player.event", {
-          name: "player.event",
-          occurredAt: new Date().toISOString(),
-          payload: {
-            type: req.params.type,
-            userId: req.params.id,
-            videoId: req.params.videoID,
-            args: params,
-          },
-        });
+        if (fastify.library.helpers.validateVideoId(req.params.videoID))
+          await fastify.events.queue.add("player.event", {
+            name: "player.event",
+            occurredAt: new Date().toISOString(),
+            payload: {
+              type: req.params.type,
+              userId: req.params.id,
+              videoId: req.params.videoID,
+              args: params,
+            },
+          });
         return {
           success: true,
           message: "Success! Video added to library",

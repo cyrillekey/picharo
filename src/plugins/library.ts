@@ -12,6 +12,8 @@ interface Library {
   db: PostgresClient<Contract, NoCollectionClasses>;
   helpers: {
     parseMovieId: typeof parseMovieId;
+    validateVideoId: typeof validateVideoId;
+    catalogBuilder: typeof catalogBuilder;
     tmdb: TMDBClient;
   };
 }
@@ -22,7 +24,10 @@ export default fp<Library>(async (fastify) => {
     url: process.env["DATABASE_URL"]!,
   });
   const tmdb = new TMDBClient(fastify);
-  fastify.decorate("library", { db: db, helpers: { parseMovieId, tmdb } });
+  fastify.decorate("library", {
+    db: db,
+    helpers: { parseMovieId, tmdb, validateVideoId, catalogBuilder },
+  });
 });
 
 declare module "fastify" {
@@ -61,4 +66,36 @@ const parseMovieId = (
   } else {
     return false;
   }
+};
+
+const validateVideoId = (id: string): boolean => {
+  try {
+    return !!id.match(/^tt/);
+  } catch {
+    return false;
+  }
+};
+
+const catalogBuilder = ({ country }: { country: string }) => {
+  const catalogs = [
+    {
+      id: "top-movies-country",
+      name: `Top 10 movies in ${country}`,
+      type: "movie",
+    },
+    { id: "top-tv-country", name: `Top 10 tv in ${country}`, type: "series" },
+    { id: "recommendation-movie", name: "Recommended Movies", type: "movie" },
+    { id: "recommendation-tv", name: "Recommended Series", type: "series" },
+    {
+      id: "watchlist-movies",
+      name: "Watchlist Movies",
+      type: "movie",
+    },
+    {
+      id: "watchlist-series",
+      name: "Watchlist Series",
+      type: "series",
+    },
+  ];
+  return catalogs;
 };
