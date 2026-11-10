@@ -20,7 +20,6 @@ const route: FastifyPluginCallbackJsonSchemaToTs = (fastify, _opts) => {
           },
           catalogId: {
             type: "string",
-            enum: [],
           },
         },
         required: ["id", "type", "catalogId"],
