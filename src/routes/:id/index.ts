@@ -18,8 +18,27 @@ const root: FastifyPluginAsync = async (fastify, _opts): Promise<void> => {
         },
       },
     },
-    async function () {
-      return baseManifest;
+    async function (req, rep) {
+      try {
+        const user = req.user;
+        console.log(user);
+        const catalog = fastify.library.helpers.catalogBuilder({
+          country: user.country,
+        });
+        const manifest = {
+          ...baseManifest,
+          catalogs: catalog,
+          behaviorHints: {
+            configurable: true,
+            epgProvider: true,
+            configurationRequired: false,
+          },
+        };
+        return manifest;
+      } catch (error) {
+        req.log.error(error);
+        return rep.redirect("/configure");
+      }
     },
   );
 };
