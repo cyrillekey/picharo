@@ -14,7 +14,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "check": "npm run lint && npm run format:check",
-    "start": "fastify start -l info dist/src/app.js",
+    "start": "fastify start -l info dist/src/app.js --options",
     "worker": "node --enable-source-maps dist/src/worker.js",
     "build": "tsc && tsc-alias -p tsconfig.json",
     "watch:ts": "tsc -w & tsc-alias -p tsconfig.json -w",

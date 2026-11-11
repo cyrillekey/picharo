@@ -64,7 +64,7 @@ const playerRoute: FastifyPluginCallbackJsonSchemaToTs = (
               type: req.params.type,
               userId: req.params.id,
               videoId: req.params.videoID,
-              args: params,
+              args: params,            
             },
           });
         return reply.send({

@@ -67,6 +67,7 @@ const libraryRoute: FastifyPluginCallbackJsonSchemaToTs = (
             },
             occurredAt: new Date().toISOString(),
           });
+
         return {
           success: true,
           message: "Success! Library action recorded",

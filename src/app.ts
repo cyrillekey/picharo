@@ -1,21 +1,35 @@
 import * as path from "node:path";
-import type { AutoloadPluginOptions } from "@fastify/autoload";
 import AutoLoad from "@fastify/autoload";
-import type { FastifyPluginAsync } from "fastify";
+import type { FastifyPluginAsync, FastifyServerOptions } from "fastify";
 import { fileURLToPath } from "node:url";
 import fastifyCors from "@fastify/cors";
 import fastifySwagger from "@fastify/swagger";
 import type { JsonSchemaToTsProvider } from "@fastify/type-provider-json-schema-to-ts";
+import { createEventsWorker } from "@/consumers/events.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export type AppOptions = {
   // Place your custom options for app below here.
-} & Partial<AutoloadPluginOptions>;
+} & Partial<FastifyServerOptions>;
 
 // Pass --options via CLI arguments in command to enable these options.
-const options: AppOptions = {};
+const options: AppOptions = {
+  logger:
+    process.env.NODE_ENV == "production"
+      ? {
+          transport: {
+            target: "@axiomhq/pino",
+            options: {
+              dataset: process.env.AXIOM_DATASET,
+              token: process.env.AXIOM_TOKEN,
+              axiomClient: "picharo",
+            },
+          },
+        }
+      : true,
+};
 
 const app: FastifyPluginAsync<AppOptions> = async (
   fastify,
@@ -46,6 +60,11 @@ const app: FastifyPluginAsync<AppOptions> = async (
       },
       tags: [],
     },
+  });
+
+  void fastify.addHook("onReady", () => {
+    createEventsWorker(fastify);
+    console.log("registered");
   });
   // Do not touch the following lines
 

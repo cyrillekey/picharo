@@ -150,7 +150,7 @@ export const playerConsumer: EventHandlers["player.event"] = async (
   payload,
 ) => {
   try {
-    const media = app.library.helpers.parseMovieId(payload.videoId);
+    const media = app.library.helpers.parseMovieId(payload.videoId);    
     if (!media) {
       app.log.warn(`Invalid media ID ${payload.videoId}`);
       return;
