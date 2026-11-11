@@ -199,6 +199,13 @@
                   "kind": "scalar"
                 }
               },
+              "poster": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
               "releaseDate": {
                 "nullable": false,
                 "type": {
@@ -302,6 +309,9 @@
                 },
                 "popularity": {
                   "column": "popularity"
+                },
+                "poster": {
+                  "column": "poster"
                 },
                 "releaseDate": {
                   "column": "releaseDate"
@@ -931,6 +941,11 @@
                   "dataType": "pg/float8",
                   "nullable": false
                 },
+                "poster": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": true
+                },
                 "releaseDate": {
                   "codecId": "pg/text@1",
                   "dataType": "pg/text",
@@ -1467,7 +1482,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "be7b988549373808cb21d5de226f735fda3eeccb02987a78a319e2526339f562"
+    "storageHash": "749aa1a9c2aec50a8da9e9fc2c0d23ef9f5c839699750c4b7d04bdd3212ca35b"
   },
   "execution": {
     "executionHash": "034ceb315de38386a4b7d07a73d6a73145c0750f2683b0f4604958845e57fdb8",

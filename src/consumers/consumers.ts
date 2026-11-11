@@ -30,7 +30,8 @@ export const libraryConsumer: EventHandlers["library.event"] = async (
             originalLanguage: details.original_language,
             popularity: details.popularity,
             releaseDate: details.release_date ?? details.first_air_date ?? "",
-            id: details.id,            
+            id: details.id,
+            poster: details.poster_path,
           });
           await app.library.db.orm.public.Genre.createAll(
             details.genres.map((a) => ({
@@ -177,8 +178,9 @@ export const playerConsumer: EventHandlers["player.event"] = async (
         mediaType: details.mediad_type ?? "movie",
         originalLanguage: details.original_language,
         popularity: details.popularity,
-        releaseDate: details.release_date,        
+        releaseDate: details.release_date ?? details.first_air_date ?? "",
         id: details.id,
+        poster: details.poster_path,        
       });
       await app.library.db.orm.public.Genre.createAll(
         details.genres.map((a) => ({

@@ -23,7 +23,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'be7b988549373808cb21d5de226f735fda3eeccb02987a78a319e2526339f562'>;
+  StorageHashBase<'749aa1a9c2aec50a8da9e9fc2c0d23ef9f5c839699750c4b7d04bdd3212ca35b'>;
 export type ExecutionHash =
   ExecutionHashBase<'034ceb315de38386a4b7d07a73d6a73145c0750f2683b0f4604958845e57fdb8'>;
 export type ProfileHash =
@@ -345,6 +345,7 @@ export namespace Models {
     mediaType: FieldOutputTypes['public']['Movie']['mediaType'];
     originalLanguage: FieldOutputTypes['public']['Movie']['originalLanguage'];
     popularity: FieldOutputTypes['public']['Movie']['popularity'];
+    poster: FieldOutputTypes['public']['Movie']['poster'];
     releaseDate: FieldOutputTypes['public']['Movie']['releaseDate'];
     title: FieldOutputTypes['public']['Movie']['title'];
     updatedat: FieldOutputTypes['public']['Movie']['updatedat'];
@@ -530,6 +531,12 @@ type ContractBase = Omit<
                   readonly dataType: 'pg/float8';
                   readonly codecId: 'pg/float8@1';
                   readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly poster: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
                   readonly many: false;
                 };
                 readonly releaseDate: {
@@ -1058,6 +1065,10 @@ type ContractBase = Omit<
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/float8@1' };
               };
+              readonly poster: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
               readonly releaseDate: {
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
@@ -1124,6 +1135,7 @@ type ContractBase = Omit<
                 readonly mediaType: { readonly column: 'mediaType' };
                 readonly originalLanguage: { readonly column: 'originalLanguage' };
                 readonly popularity: { readonly column: 'popularity' };
+                readonly poster: { readonly column: 'poster' };
                 readonly releaseDate: { readonly column: 'releaseDate' };
                 readonly title: { readonly column: 'title' };
                 readonly updatedat: { readonly column: 'updatedat' };

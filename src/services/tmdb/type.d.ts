@@ -40,7 +40,7 @@ export interface MovieDetails {
   name?: string;
   overview: string;
   popularity: number;
-  poster_path: string;
+  poster_path: string | null;
   production_companies: ProductionCompany[];
   production_countries: ProductionCountry[];
   release_date: string;

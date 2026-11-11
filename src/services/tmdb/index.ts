@@ -69,12 +69,33 @@ class TMDBClient {
       if (!shallow) {
         return null;
       }
-      const details = await this.findMediaDetails(
-        shallow.id,
-        shallow.media_type,
-      );
-      if (details) return { ...details, mediad_type: shallow.media_type };
+      const [details, poster] = await Promise.all([
+        this.findMediaDetails(shallow.id, shallow.media_type),
+        this.privateGetPoster(id, shallow.media_type),
+      ]);
+      if (details)
+        return {
+          ...details,
+          mediad_type: shallow.media_type,
+          poster_path: poster,
+        };
       return null;
+    } catch (error) {
+      this.app?.log.error(error);
+      return null;
+    }
+  }
+  async privateGetPoster(id: string, mediaType: string) {
+    try {
+      const type = mediaType == "tv" ? "series" : "movie";
+      const url = `https://v3-cinemeta.strem.io/meta/${type}/${id}.json`;
+      const request = await fetch(url);
+      const response = (await request.json()) as Record<
+        string,
+        Record<string, string>
+      >;
+      const poster = response?.meta?.poster;
+      return poster;
     } catch (error) {
       this.app?.log.error(error);
       return null;

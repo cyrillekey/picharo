@@ -50,7 +50,7 @@ const route: FastifyPluginCallbackJsonSchemaToTs = (fastify, _opts) => {
               metas = movies.map((a) => ({
                 id: a.movie.externalId,
                 name: a.movie.title,
-                type: a.movie.mediaType,
+                type: a.movie.mediaType == "movie" ? "movie":"series",
                 description: a.movie.description,
               }));
             }
@@ -68,7 +68,7 @@ const route: FastifyPluginCallbackJsonSchemaToTs = (fastify, _opts) => {
               metas = movies.map((a) => ({
                 id: a.movie.externalId,
                 name: a.movie.title,
-                type: a.movie.mediaType,
+                type: a.movie.mediaType == "movie" ? "movie":"series",
                 description: a.movie.description,
               }));
             }
@@ -77,7 +77,7 @@ const route: FastifyPluginCallbackJsonSchemaToTs = (fastify, _opts) => {
             break;
         }
         return {
-          metas: metas,
+          metas: metas
         };
       } catch (error) {
         req.log.error(error);
