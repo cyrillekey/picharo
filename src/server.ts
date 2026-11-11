@@ -14,7 +14,19 @@ dotenv.config();
 
 // Instantiate Fastify with some config
 const app = Fastify({
-  logger: true,
+  logger:
+    process.env.NODE_ENV == "production"
+      ? {
+          transport: {
+            target: "@axiomhq/pino",
+            options: {
+              dataset: process.env.AXIOM_DATASET,
+              token: process.env.AXIOM_TOKEN,
+              axiomClient: "picharo",
+            },
+          },
+        }
+      : true,
 });
 
 // Register your application as a normal plugin.

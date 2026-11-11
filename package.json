@@ -26,6 +26,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@axiomhq/pino": "^2.0.0",
     "@fastify/autoload": "^6.0.0",
     "@fastify/cors": "^11.4.1",
     "@fastify/sensible": "^6.0.0",
