@@ -51,7 +51,7 @@ const playerRoute: FastifyPluginCallbackJsonSchemaToTs = (
         },
       },
     },
-    async (req, _reply) => {
+    async (req, reply) => {
       try {
         const params = decodeSearchString<PlayerExtraArgs>(
           req.params.extraArgs ?? "",
@@ -67,16 +67,16 @@ const playerRoute: FastifyPluginCallbackJsonSchemaToTs = (
               args: params,
             },
           });
-        return {
+        return reply.send({
           success: true,
           message: "Success! Video added to library",
-        };
+        });
       } catch (error) {
         req.log.error(error);
-        return {
+        return reply.send({
           success: false,
           message: "Error! Could not validate request",
-        };
+        });
       }
     },
   );
