@@ -8,7 +8,7 @@ const playerRoute: FastifyPluginCallbackJsonSchemaToTs = (
   _opts,
 ): void => {
   fastify.all(
-    "/:type/:videoID:/:extraArgs.json",
+    "/:type/:videoID/:extraArgs.json",
     {
       preHandler: isRequestValidated,
       schema: {
