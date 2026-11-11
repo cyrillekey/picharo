@@ -20,15 +20,64 @@ const route: FastifyPluginCallbackJsonSchemaToTs = (fastify, _opts) => {
           },
           catalogId: {
             type: "string",
+            enum: [
+              "top-movies-country",
+              "top-tv-country",
+              "recommendation-movie",
+              "recommendation-tv",
+              "watchlist-movies",
+              "watchlist-series",
+            ],
           },
         },
         required: ["id", "type", "catalogId"],
       },
     },
-    handler: (req) => {
+    handler: async (req) => {
       try {
+        let metas: { id: string; type: string; name: string }[] = [];
+        switch (req.params.catalogId) {
+          case "watchlist-movies":
+            {
+              const movies =
+                await fastify.library.db.orm.public.WatchList.where({
+                  userId: req.user.id,
+                })
+                  .where((a) => a.movie.every((b) => b.mediaType.eq("movie")))
+                  .include("movie")
+                  .orderBy((a) => a.createdat.desc())
+                  .all();
+              metas = movies.map((a) => ({
+                id: a.movie.externalId,
+                name: a.movie.title,
+                type: a.movie.mediaType,
+                description: a.movie.description,
+              }));
+            }
+            break;
+          case "watchlist-series":
+            {
+              const movies =
+                await fastify.library.db.orm.public.WatchList.where({
+                  userId: req.user.id,
+                })
+                  .where((a) => a.movie.every((b) => b.mediaType.eq("tv")))
+                  .include("movie")
+                  .orderBy((a) => a.createdat.desc())
+                  .all();
+              metas = movies.map((a) => ({
+                id: a.movie.externalId,
+                name: a.movie.title,
+                type: a.movie.mediaType,
+                description: a.movie.description,
+              }));
+            }
+            break;
+          default:
+            break;
+        }
         return {
-          metas: [],
+          metas: metas,
         };
       } catch (error) {
         req.log.error(error);

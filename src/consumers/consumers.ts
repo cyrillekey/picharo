@@ -20,7 +20,7 @@ export const libraryConsumer: EventHandlers["library.event"] = async (
         const details = await app.library.helpers.tmdb.findMedia(media.movieId);
         if (details) {
           const movie = await app.library.db.orm.public.Movie.create({
-            externalId: details!.imdb_id,
+            externalId: details!.imdb_id ?? media.movieId,
             averagevote: details.vote_average,
             description: details.overview,
             title: details.title,
@@ -163,11 +163,12 @@ export const playerConsumer: EventHandlers["player.event"] = async (
       movieId = exists.id;
     } else {
       const details = await app.library.helpers.tmdb.findMedia(media.movieId);
+
       if (!details) {
         return;
       }
       const movie = await app.library.db.orm.public.Movie.create({
-        externalId: details!.imdb_id,
+        externalId: details!.imdb_id ?? media.movieId,
         averagevote: details.vote_average,
         description: details.overview,
         title: details.title,
@@ -216,7 +217,7 @@ export const playerConsumer: EventHandlers["player.event"] = async (
         : 0;
     switch (payload.args?.action) {
       case "start":
-        if(completeRatio < 0.1) {
+        if (completeRatio < 0.1) {
           // TODO: trigger start event
         }
         break;
