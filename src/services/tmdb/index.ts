@@ -4,8 +4,8 @@ import type { FastifyInstance } from "fastify";
 
 class TMDBClient {
   private baseUrl = "https://api.themoviedb.org/3";
-  private app: FastifyInstance;
-  constructor(app: FastifyInstance) {
+  private app?: FastifyInstance;
+  constructor(app?: FastifyInstance) {
     this.app = app;
   }
   private async findMediaById(id: string): Promise<MovieResult | null> {
@@ -38,7 +38,7 @@ class TMDBClient {
         return null;
       }
     } catch (error) {
-      this.app.log.error(error);
+      this.app?.log.error(error);
       return null;
     }
   }
@@ -59,7 +59,7 @@ class TMDBClient {
       const response = (await request.json()) as MovieDetails;
       return response;
     } catch (error) {
-      this.app.log.error(error);
+      this.app?.log.error(error);
       return null;
     }
   }
@@ -76,7 +76,7 @@ class TMDBClient {
       if (details) return { ...details, mediad_type: shallow.media_type };
       return null;
     } catch (error) {
-      this.app.log.error(error);
+      this.app?.log.error(error);
       return null;
     }
   }

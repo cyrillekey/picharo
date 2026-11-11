@@ -23,7 +23,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'a7107090631548064e5034e7c8cd8964f877e368156e34c74d08cee533c5cd40'>;
+  StorageHashBase<'be7b988549373808cb21d5de226f735fda3eeccb02987a78a319e2526339f562'>;
 export type ExecutionHash =
   ExecutionHashBase<'034ceb315de38386a4b7d07a73d6a73145c0750f2683b0f4604958845e57fdb8'>;
 export type ProfileHash =
@@ -336,6 +336,7 @@ export namespace Models {
   };
   export type public_Movie = {
     averagevote: FieldOutputTypes['public']['Movie']['averagevote'];
+    collection: FieldOutputTypes['public']['Movie']['collection'];
     createdat: FieldOutputTypes['public']['Movie']['createdat'];
     description: FieldOutputTypes['public']['Movie']['description'];
     externalId: FieldOutputTypes['public']['Movie']['externalId'];
@@ -473,6 +474,12 @@ type ContractBase = Omit<
                   readonly dataType: 'pg/float8';
                   readonly codecId: 'pg/float8@1';
                   readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly collection: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
                   readonly many: false;
                 };
                 readonly createdat: {
@@ -1010,6 +1017,10 @@ type ContractBase = Omit<
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/float8@1' };
               };
+              readonly collection: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
               readonly createdat: {
                 readonly nullable: false;
                 readonly type: {
@@ -1104,6 +1115,7 @@ type ContractBase = Omit<
               readonly namespaceId: 'public';
               readonly fields: {
                 readonly averagevote: { readonly column: 'averagevote' };
+                readonly collection: { readonly column: 'collection' };
                 readonly createdat: { readonly column: 'createdat' };
                 readonly description: { readonly column: 'description' };
                 readonly externalId: { readonly column: 'externalId' };

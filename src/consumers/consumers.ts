@@ -18,18 +18,19 @@ export const libraryConsumer: EventHandlers["library.event"] = async (
         .first();
       if (!existsInDb?.id) {
         const details = await app.library.helpers.tmdb.findMedia(media.movieId);
+
         if (details) {
           const movie = await app.library.db.orm.public.Movie.create({
             externalId: details!.imdb_id ?? media.movieId,
             averagevote: details.vote_average,
             description: details.overview,
-            title: details.title,
+            title: details.title ?? details.name,
             languages: details.spoken_languages.map((a) => a.english_name),
             mediaType: details.mediad_type ?? "movie",
             originalLanguage: details.original_language,
             popularity: details.popularity,
-            releaseDate: details.release_date,
-            id: details.id,
+            releaseDate: details.release_date ?? details.first_air_date ?? "",
+            id: details.id,            
           });
           await app.library.db.orm.public.Genre.createAll(
             details.genres.map((a) => ({
@@ -176,7 +177,7 @@ export const playerConsumer: EventHandlers["player.event"] = async (
         mediaType: details.mediad_type ?? "movie",
         originalLanguage: details.original_language,
         popularity: details.popularity,
-        releaseDate: details.release_date,
+        releaseDate: details.release_date,        
         id: details.id,
       });
       await app.library.db.orm.public.Genre.createAll(

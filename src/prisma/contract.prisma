@@ -24,6 +24,7 @@ model Movie {
   mediaType        String
   originalLanguage String
   languages        String[]
+  collection       String?
   externalId       String             @unique
   genres           MovieGenre[]       @relation(name: "moviegenrerelationship",)
   watchHistory     WatchHistory[]

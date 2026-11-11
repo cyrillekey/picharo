@@ -6,6 +6,7 @@ import contractJson from "@/prisma/contract.json" with { type: "json" };
 import type { NoCollectionClasses } from "@prisma/orm-postgres/orm-client";
 import fp from "fastify-plugin";
 import TMDBClient from "@/services/tmdb";
+import { getCatalogEventsForDate } from "@/utils/holiday";
 export const contract = contractFromJson<Contract>(contractJson);
 
 interface Library {
@@ -91,11 +92,12 @@ const catalogBuilder = ({ country }: { country: string }) => {
       name: "Watchlist Movies",
       type: "movie",
     },
-    {
-      id: "watchlist-series",
-      name: "Watchlist Series",
-      type: "series",
-    },
   ];
-  return catalogs;
+  const dateCatalogs = getCatalogEventsForDate(new Date());
+  const formated = dateCatalogs.map((a) => ({
+    id: a.id,
+    name: a.title,
+    type: "movie",
+  }));
+  return catalogs.concat(formated);
 };

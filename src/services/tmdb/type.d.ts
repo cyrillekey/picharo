@@ -28,7 +28,7 @@ export interface MovieResult {
 export interface MovieDetails {
   adult: boolean;
   backdrop_path: string;
-  belongs_to_collection: null;
+  belongs_to_collection?: CollectionDetails;
   budget: number;
   genres: Genre[];
   homepage: string;
@@ -37,6 +37,7 @@ export interface MovieDetails {
   origin_country: string[];
   original_language: string;
   original_title: string;
+  name?: string;
   overview: string;
   popularity: number;
   poster_path: string;
@@ -53,6 +54,7 @@ export interface MovieDetails {
   video: boolean;
   vote_average: number;
   vote_count: number;
+  first_air_date?: string;
   mediad_type?: string;
 }
 
@@ -76,5 +78,10 @@ export interface ProductionCountry {
 export interface SpokenLanguage {
   english_name: string;
   iso_639_1: string;
+  name: string;
+}
+
+export interface CollectionDetails {
+  id: number;
   name: string;
 }
