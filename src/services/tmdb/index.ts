@@ -11,21 +11,28 @@ class TMDBClient {
   private async findMediaById(id: string): Promise<MovieResult | null> {
     try {
       const url = `${this.baseUrl}/find/${id}?external_source=imdb_id&language=en-US`;
+      const headers = new Headers();
+      headers.append("accept", "application/json");
+      headers.append("Authorization", `Bearer ${config.tmdb.accessToken}`);
       const options: RequestInit = {
         method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${config.tmdb.accessToken}`,
-        },
+        headers: headers,
       };
       const request = await fetch(url, options);
+
       const response: MovieFetchResults =
         (await request.json()) as MovieFetchResults;
       if (response != null && response != undefined) {
         if (!response.movie_results && !response.tv_results) {
           return null;
         } else {
-          return (response.tv_results || response.movie_results)?.at(0) ?? null;
+          if (response.tv_results.length > 0) {
+            return response.tv_results[0];
+          } else if (response.movie_results.length > 0) {
+            return response.movie_results[0];
+          } else {
+            return null;
+          }
         }
       } else {
         return null;

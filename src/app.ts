@@ -64,7 +64,6 @@ const app: FastifyPluginAsync<AppOptions> = async (
 
   void fastify.addHook("onReady", () => {
     createEventsWorker(fastify);
-    console.log("registered");
   });
   // Do not touch the following lines
 

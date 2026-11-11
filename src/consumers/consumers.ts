@@ -150,7 +150,7 @@ export const playerConsumer: EventHandlers["player.event"] = async (
   payload,
 ) => {
   try {
-    const media = app.library.helpers.parseMovieId(payload.videoId);    
+    const media = app.library.helpers.parseMovieId(payload.videoId);
     if (!media) {
       app.log.warn(`Invalid media ID ${payload.videoId}`);
       return;
@@ -210,8 +210,15 @@ export const playerConsumer: EventHandlers["player.event"] = async (
       },
       conflictOn: { movieId: movieId, userId: payload.userId },
     });
+    const completeRatio =
+      payload.args?.currentTime && payload.args?.duration
+        ? payload.args.currentTime / payload.args.duration
+        : 0;
     switch (payload.args?.action) {
       case "start":
+        if(completeRatio < 0.1) {
+          // TODO: trigger start event
+        }
         break;
       case "pause":
         await app.library.db.orm.public.WatchHistory.where({
@@ -220,10 +227,6 @@ export const playerConsumer: EventHandlers["player.event"] = async (
         break;
       case "stop":
         {
-          const completeRatio =
-            payload.args.currentTime && payload.args.duration
-              ? payload.args.currentTime / payload.args.duration
-              : 0;
           if (completeRatio > 0.95) {
             // TODO: trigger completed event
           }
@@ -232,10 +235,6 @@ export const playerConsumer: EventHandlers["player.event"] = async (
       default:
         return;
     }
-    const completeRatio =
-      payload.args.currentTime && payload.args.duration
-        ? payload.args.currentTime / payload.args.duration
-        : 0;
     if (completeRatio > 0.95) {
       // TODO: trigger watch complete event
     }
