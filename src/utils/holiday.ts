@@ -90,6 +90,17 @@ export interface CatalogEvent extends Holiday {
   priority: number;
 }
 
+/** Static metadata for one supported catalogue event. */
+export interface CatalogEventDefinition extends Holiday {
+  /** Every candidate title for this event; at least three. */
+  titles: string[];
+  kind: CatalogEventKind;
+  description: string;
+  regions: string[];
+  /** Higher values are more specific and appear first in date results. */
+  priority: number;
+}
+
 export type HolidayDateInput = Date | string | number;
 
 interface CalendarDate {
@@ -1240,6 +1251,32 @@ const EVENTS: readonly EventDefinition[] = [
 ];
 
 /**
+ * Returns every supported catalogue event definition. Each event includes a
+ * randomly selected `title` plus the full `titles` list.
+ *
+ * @example
+ * getAllCatalogEvents().map((event) => event.id);
+ * // ["new-year", "lunar-new-year", "valentines-day", ...]
+ */
+export function getAllCatalogEvents(): CatalogEventDefinition[] {
+  return EVENTS.map(
+    ({ id, titles, genres, kind, description, regions, priority }) => ({
+      id,
+      title: pickRandomTitle(titles),
+      titles: [...titles],
+      genres: [...genres],
+      kind,
+      description,
+      regions: [...regions],
+      priority,
+    }),
+  );
+}
+
+/** Alias for `getAllCatalogEvents`, using shorter event-centric naming. */
+export const getAllEvents = getAllCatalogEvents;
+
+/**
  * Returns every major holiday, religious observance, film festival or awards
  * window that contains the given date, ordered by priority.
  *
@@ -1285,6 +1322,26 @@ export function getCatalogEventsForDate(
 
 /** Alias for `getCatalogEventsForDate`, using holiday-centric naming. */
 export const getHolidaysForDate = getCatalogEventsForDate;
+
+/**
+ * Returns `true` when the given catalogue event is active on the given date.
+ *
+ * @example
+ * isCatalogEventActive("christmas", "24/dec/2026"); // true
+ * isCatalogEventActive("halloween", "24/dec/2026"); // false
+ */
+export function isCatalogEventActive(
+  eventId: string,
+  date: HolidayDateInput,
+): boolean {
+  const event = EVENTS.find((candidate) => candidate.id === eventId);
+  if (!event) return false;
+
+  return event.windowFor(resolveCalendarDate(date)) !== null;
+}
+
+/** Alias for `isCatalogEventActive`, using shorter event-centric naming. */
+export const isEventActive = isCatalogEventActive;
 
 /**
  * Convenience wrapper for callers that only need the top catalogue event.
