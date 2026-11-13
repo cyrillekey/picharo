@@ -2,6 +2,7 @@ import { isRequestValidated } from "@/hooks";
 import type { Models } from "@/prisma/contract";
 import { isCatalogEventActive } from "@/utils/holiday";
 import type { FastifyPluginCallbackJsonSchemaToTs } from "@fastify/type-provider-json-schema-to-ts";
+import dayjs from "dayjs";
 
 const route: FastifyPluginCallbackJsonSchemaToTs = (fastify, _opts) => {
   fastify.route({
@@ -36,6 +37,21 @@ const route: FastifyPluginCallbackJsonSchemaToTs = (fastify, _opts) => {
           "recommendation-tv",
           "watchlist-movies",
           "watchlist-series",
+        ];
+        const awardsIds = [
+          "summer-blockbusters",
+          "awards-season",
+          "golden-globes",
+          "sundance",
+          "bafta",
+          "berlinale",
+          "oscars",
+          "sxsw",
+          "cannes",
+          "tribeca",
+          "venice",
+          "tiff",
+          "emmys",
         ];
         let movies: Partial<Models.public_Movie>[] = [];
         if (ids.includes(req.params.catalogId)) {
@@ -78,11 +94,24 @@ const route: FastifyPluginCallbackJsonSchemaToTs = (fastify, _opts) => {
         } else {
           const active = isCatalogEventActive(req.params.catalogId, new Date());
           if (active) {
-            movies = await fastify.library.db.orm.public.Movie.where({
-              collection: req.params.catalogId,
-            })
-              .orderBy((a) => a.averagevote.desc())
-              .all();
+            const isAward = awardsIds.includes(req.params.catalogId);
+            if (!isAward) {
+              movies = await fastify.library.db.orm.public.Movie.where({
+                collection: req.params.catalogId,
+              })
+                .orderBy((a) => a.averagevote.desc())
+                .all();
+            } else {
+              const startYear = dayjs().subtract(1, "year").startOf("year");
+              const endYear = dayjs().endOf("year");
+              movies = await fastify.library.db.orm.public.Movie.where({
+                collection: req.params.catalogId,
+              })
+                .where((a) => a.release_date.gte(startYear.toDate()))
+                .where((a) => a.release_date.lte(endYear.toDate()))
+                .orderBy((a) => a.averagevote.desc())
+                .all();
+            }
           }
         }
         const metas = movies.map((a) => ({

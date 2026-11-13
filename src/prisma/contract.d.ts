@@ -23,7 +23,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'749aa1a9c2aec50a8da9e9fc2c0d23ef9f5c839699750c4b7d04bdd3212ca35b'>;
+  StorageHashBase<'849a719c8411b7874e81eac7558f8cc894b3be6a349e6637b25a9341034d946c'>;
 export type ExecutionHash =
   ExecutionHashBase<'034ceb315de38386a4b7d07a73d6a73145c0750f2683b0f4604958845e57fdb8'>;
 export type ProfileHash =
@@ -335,7 +335,9 @@ export namespace Models {
     readonly [RelationKeys]?: 'movies';
   };
   export type public_Movie = {
+    ageRating: FieldOutputTypes['public']['Movie']['ageRating'];
     averagevote: FieldOutputTypes['public']['Movie']['averagevote'];
+    award: FieldOutputTypes['public']['Movie']['award'];
     collection: FieldOutputTypes['public']['Movie']['collection'];
     createdat: FieldOutputTypes['public']['Movie']['createdat'];
     description: FieldOutputTypes['public']['Movie']['description'];
@@ -346,9 +348,10 @@ export namespace Models {
     originalLanguage: FieldOutputTypes['public']['Movie']['originalLanguage'];
     popularity: FieldOutputTypes['public']['Movie']['popularity'];
     poster: FieldOutputTypes['public']['Movie']['poster'];
-    releaseDate: FieldOutputTypes['public']['Movie']['releaseDate'];
+    release_date: FieldOutputTypes['public']['Movie']['release_date'];
     title: FieldOutputTypes['public']['Movie']['title'];
     updatedat: FieldOutputTypes['public']['Movie']['updatedat'];
+    voteCount: FieldOutputTypes['public']['Movie']['voteCount'];
     genres: public_MovieGenre[];
     watchHistory: public_WatchHistory[];
     watchlists: public_WatchList[];
@@ -471,10 +474,22 @@ type ContractBase = Omit<
             };
             readonly movie: {
               columns: {
+                readonly ageRating: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                  readonly many: false;
+                };
                 readonly averagevote: {
                   readonly dataType: 'pg/float8';
                   readonly codecId: 'pg/float8@1';
                   readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly award: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
                   readonly many: false;
                 };
                 readonly collection: {
@@ -539,10 +554,11 @@ type ContractBase = Omit<
                   readonly nullable: true;
                   readonly many: false;
                 };
-                readonly releaseDate: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
-                  readonly nullable: false;
+                readonly release_date: {
+                  readonly dataType: 'pg/timestamptz';
+                  readonly codecId: 'pg/timestamptz-date@1';
+                  readonly nullable: true;
+                  readonly typeParams: { readonly precision: 3 };
                   readonly many: false;
                 };
                 readonly title: {
@@ -556,6 +572,12 @@ type ContractBase = Omit<
                   readonly codecId: 'pg/timestamptz-date@1';
                   readonly nullable: false;
                   readonly typeParams: { readonly precision: 3 };
+                  readonly many: false;
+                };
+                readonly voteCount: {
+                  readonly dataType: 'pg/int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: true;
                   readonly many: false;
                 };
               };
@@ -808,7 +830,7 @@ type ContractBase = Omit<
                 };
               };
               primaryKey: { readonly columns: readonly ['id'] };
-              uniques: readonly [{ readonly columns: readonly ['movieId', 'userId'] }];
+              uniques: readonly [];
               indexes: readonly [
                 {
                   readonly name: 'watchhistory_movieId_idx_8cb9f9db';
@@ -1020,9 +1042,17 @@ type ContractBase = Omit<
           };
           readonly Movie: {
             readonly fields: {
+              readonly ageRating: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
               readonly averagevote: {
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/float8@1' };
+              };
+              readonly award: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
               readonly collection: {
                 readonly nullable: true;
@@ -1069,9 +1099,13 @@ type ContractBase = Omit<
                 readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
-              readonly releaseDate: {
-                readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              readonly release_date: {
+                readonly nullable: true;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-date@1';
+                  readonly typeParams: { readonly precision: 3 };
+                };
               };
               readonly title: {
                 readonly nullable: false;
@@ -1084,6 +1118,10 @@ type ContractBase = Omit<
                   readonly codecId: 'pg/timestamptz-date@1';
                   readonly typeParams: { readonly precision: 3 };
                 };
+              };
+              readonly voteCount: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
               };
             };
             readonly relations: {
@@ -1125,7 +1163,9 @@ type ContractBase = Omit<
               readonly table: 'movie';
               readonly namespaceId: 'public';
               readonly fields: {
+                readonly ageRating: { readonly column: 'ageRating' };
                 readonly averagevote: { readonly column: 'averagevote' };
+                readonly award: { readonly column: 'award' };
                 readonly collection: { readonly column: 'collection' };
                 readonly createdat: { readonly column: 'createdat' };
                 readonly description: { readonly column: 'description' };
@@ -1136,9 +1176,10 @@ type ContractBase = Omit<
                 readonly originalLanguage: { readonly column: 'originalLanguage' };
                 readonly popularity: { readonly column: 'popularity' };
                 readonly poster: { readonly column: 'poster' };
-                readonly releaseDate: { readonly column: 'releaseDate' };
+                readonly release_date: { readonly column: 'release_date' };
                 readonly title: { readonly column: 'title' };
                 readonly updatedat: { readonly column: 'updatedat' };
+                readonly voteCount: { readonly column: 'voteCount' };
               };
             };
           };

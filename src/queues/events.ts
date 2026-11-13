@@ -18,6 +18,9 @@ export interface EventPayloads {
     videoId: string;
     args?: PlayerExtraArgs;
   };
+  "media.stop": {
+    watchHistoryId: number;
+  };
 }
 
 export type EventName = keyof EventPayloads;

@@ -20,11 +20,14 @@ model Movie {
   description      Text
   popularity       Float
   averagevote      Float
-  releaseDate      String
+  voteCount        Int?
+  ageRating        String?  
+  release_date     DateTime?
   mediaType        String
   originalLanguage String
   languages        String[]
   collection       String?
+  award            String?
   poster           String?
   externalId       String             @unique
   genres           MovieGenre[]       @relation(name: "moviegenrerelationship",)
@@ -51,7 +54,7 @@ model WatchHistory {
   createdat       DateTime           @default(now()) @onCreate(now())
   updatedat       temporal.UpdatedAt
 
-  @@unique([movieId, userId])
+  // @@unique([movieId, userId])
   @@map("watchhistory")
 }
 

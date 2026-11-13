@@ -123,10 +123,24 @@
           },
           "Movie": {
             "fields": {
+              "ageRating": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
               "averagevote": {
                 "nullable": false,
                 "type": {
                   "codecId": "pg/float8@1",
+                  "kind": "scalar"
+                }
+              },
+              "award": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
                   "kind": "scalar"
                 }
               },
@@ -206,11 +220,14 @@
                   "kind": "scalar"
                 }
               },
-              "releaseDate": {
-                "nullable": false,
+              "release_date": {
+                "nullable": true,
                 "type": {
-                  "codecId": "pg/text@1",
-                  "kind": "scalar"
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
                 }
               },
               "title": {
@@ -228,6 +245,13 @@
                   "typeParams": {
                     "precision": 3
                   }
+                }
+              },
+              "voteCount": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
                 }
               }
             },
@@ -280,8 +304,14 @@
             },
             "storage": {
               "fields": {
+                "ageRating": {
+                  "column": "ageRating"
+                },
                 "averagevote": {
                   "column": "averagevote"
+                },
+                "award": {
+                  "column": "award"
                 },
                 "collection": {
                   "column": "collection"
@@ -313,14 +343,17 @@
                 "poster": {
                   "column": "poster"
                 },
-                "releaseDate": {
-                  "column": "releaseDate"
+                "release_date": {
+                  "column": "release_date"
                 },
                 "title": {
                   "column": "title"
                 },
                 "updatedat": {
                   "column": "updatedat"
+                },
+                "voteCount": {
+                  "column": "voteCount"
                 }
               },
               "namespaceId": "public",
@@ -881,10 +914,20 @@
                 }
               ],
               "columns": {
+                "ageRating": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": true
+                },
                 "averagevote": {
                   "codecId": "pg/float8@1",
                   "dataType": "pg/float8",
                   "nullable": false
+                },
+                "award": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": true
                 },
                 "collection": {
                   "codecId": "pg/text@1",
@@ -946,10 +989,13 @@
                   "dataType": "pg/text",
                   "nullable": true
                 },
-                "releaseDate": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
-                  "nullable": false
+                "release_date": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": true,
+                  "typeParams": {
+                    "precision": 3
+                  }
                 },
                 "title": {
                   "codecId": "pg/text@1",
@@ -963,6 +1009,11 @@
                   "typeParams": {
                     "precision": 3
                   }
+                },
+                "voteCount": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "nullable": true
                 }
               },
               "foreignKeys": [],
@@ -1342,14 +1393,7 @@
                   "id"
                 ]
               },
-              "uniques": [
-                {
-                  "columns": [
-                    "movieId",
-                    "userId"
-                  ]
-                }
-              ]
+              "uniques": []
             },
             "watchlist": {
               "columns": {
@@ -1482,7 +1526,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "749aa1a9c2aec50a8da9e9fc2c0d23ef9f5c839699750c4b7d04bdd3212ca35b"
+    "storageHash": "849a719c8411b7874e81eac7558f8cc894b3be6a349e6637b25a9341034d946c"
   },
   "execution": {
     "executionHash": "034ceb315de38386a4b7d07a73d6a73145c0750f2683b0f4604958845e57fdb8",

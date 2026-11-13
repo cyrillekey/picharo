@@ -11,7 +11,11 @@ import {
   type EventPayloads,
 } from "../queues/events.js";
 import type { FastifyInstance } from "fastify";
-import { libraryConsumer, playerConsumer } from "./consumers.js";
+import {
+  libraryConsumer,
+  mediaStopConsumer,
+  playerConsumer,
+} from "./consumers.js";
 
 export type EventHandler<K extends EventName> = (
   app: FastifyInstance,
@@ -32,6 +36,7 @@ export interface EventsLogger {
 export const defaultEventHandlers: EventHandlers = {
   "library.event": libraryConsumer,
   "player.event": playerConsumer,
+  "media.stop": mediaStopConsumer,
 };
 
 export interface EventsWorkerOptions {

@@ -47,7 +47,7 @@ class TMDBClient {
     type: "movie" | "tv" | string,
   ): Promise<MovieDetails | null> {
     try {
-      const url = `${this.baseUrl}/${type}/${id}?language=en-US`;
+      const url = `${this.baseUrl}/${type}/${id}?language=en-US&append_to_response=external_ids`;
       const options = {
         method: "GET",
         headers: {
@@ -57,7 +57,12 @@ class TMDBClient {
       };
       const request = await fetch(url, options);
       const response = (await request.json()) as MovieDetails;
-      return response;
+      return {
+        ...response,
+        poster_path: this.getPoster(
+          response.external_ids?.imdb_id || response.imdb_id,
+        ),
+      };
     } catch (error) {
       this.app?.log.error(error);
       return null;
@@ -69,15 +74,14 @@ class TMDBClient {
       if (!shallow) {
         return null;
       }
-      const [details, poster] = await Promise.all([
+      const [details] = await Promise.all([
         this.findMediaDetails(shallow.id, shallow.media_type),
-        this.privateGetPoster(id, shallow.media_type),
       ]);
       if (details)
         return {
           ...details,
           mediad_type: shallow.media_type,
-          poster_path: poster,
+          poster_path: this.getPoster(details.imdb_id),
         };
       return null;
     } catch (error) {
@@ -85,17 +89,43 @@ class TMDBClient {
       return null;
     }
   }
-  async privateGetPoster(id: string, mediaType: string) {
+  private getPoster(id: string): string {
+    return `https://images.metahub.space/poster/small/${id}/img`;
+  }
+  private async searchMovie(
+    query: string,
+  ): Promise<MovieResult | undefined | null> {
     try {
-      const type = mediaType == "tv" ? "series" : "movie";
-      const url = `https://v3-cinemeta.strem.io/meta/${type}/${id}.json`;
-      const request = await fetch(url);
-      const response = (await request.json()) as Record<
-        string,
-        Record<string, string>
-      >;
-      const poster = response?.meta?.poster;
-      return poster;
+      const url = `${this.baseUrl}/search/multi?query=${query}&include_adult=false&language=en-US&page=1`;
+      const options = {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${config.tmdb.accessToken}`,
+        },
+      };
+      const request = await fetch(url, options);
+      const response = (await request.json()) as {
+        page: number;
+        results: MovieResult[];
+      };
+      return response?.results?.at(0);
+    } catch (error) {
+      this.app?.log.error(error);
+      return null;
+    }
+  }
+  public async searchMovieDetails(query: string): Promise<MovieDetails | null> {
+    try {
+      const response = await this.searchMovie(query);
+      if (!response) {
+        return null;
+      }
+      const details = await this.findMediaDetails(
+        response.id,
+        response.media_type == "movie" ? "movie" : "tv",
+      );
+      return details;
     } catch (error) {
       this.app?.log.error(error);
       return null;

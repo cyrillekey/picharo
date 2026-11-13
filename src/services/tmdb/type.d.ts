@@ -56,6 +56,14 @@ export interface MovieDetails {
   vote_count: number;
   first_air_date?: string;
   mediad_type?: string;
+  external_ids?:ExternalIds
+}
+
+interface ExternalIds {
+  imdb_id: string
+  twitter_id: string
+  tvdb_id: string
+  wikidata_id: string
 }
 
 export interface Genre {

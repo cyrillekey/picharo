@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import type { EventHandlers } from "./events";
 
 export const libraryConsumer: EventHandlers["library.event"] = async (
@@ -21,7 +22,7 @@ export const libraryConsumer: EventHandlers["library.event"] = async (
 
         if (details) {
           const movie = await app.library.db.orm.public.Movie.create({
-            externalId: details!.imdb_id ?? media.movieId,
+            externalId: details!.imdb_id ?? details?.external_ids?.imdb_id,
             averagevote: details.vote_average,
             description: details.overview,
             title: details.title ?? details.name,
@@ -29,9 +30,12 @@ export const libraryConsumer: EventHandlers["library.event"] = async (
             mediaType: details.mediad_type ?? "movie",
             originalLanguage: details.original_language,
             popularity: details.popularity,
-            releaseDate: details.release_date ?? details.first_air_date ?? "",
+            release_date: dayjs(
+              details.release_date ?? details.first_air_date ?? "",
+            ).toDate(),
             id: details.id,
             poster: details.poster_path,
+            voteCount: details.vote_count,
           });
           await app.library.db.orm.public.Genre.createAll(
             details.genres.map((a) => ({
@@ -59,30 +63,31 @@ export const libraryConsumer: EventHandlers["library.event"] = async (
       switch (args.args?.action) {
         case "watched":
           {
-            // chekc if history exits
-            const watched =
-              await app.library.db.orm.public.WatchHistory.whereUnique({
+            // The latest entry is the watch currently in progress, if any.
+            const currentWatch =
+              await app.library.db.orm.public.WatchHistory.where({
                 userId: args.userId,
                 movieId,
-              }).first();
-            if (watched) {
-              if (watched.status == "full") {
-                return;
-              } else {
-                await app.library.db.orm.public.WatchHistory.whereUnique({
-                  id: watched.id,
-                }).update({
-                  status: "full",
-                  endDate: new Date().toISOString(),
-                });
-              }
+              })
+                .orderBy((a) => a.id.desc())
+                .first();
+            const now = new Date().toISOString();
+            if (currentWatch?.status === "partial") {
+              // Finish the watch that was already in progress.
+              await app.library.db.orm.public.WatchHistory.whereUnique({
+                id: currentWatch.id,
+              }).update({
+                status: "full",
+                endDate: now,
+              });
             } else {
+              // Create the first watch, or a new entry when the user rewatches.
               await app.library.db.orm.public.WatchHistory.create({
                 userId: args.userId,
                 movieId: movieId,
                 status: "full",
-                startDate: new Date().toISOString(),
-                endDate: new Date().toISOString(),
+                startDate: now,
+                endDate: now,
               });
             }
             // remove from watchlist if watched
@@ -170,7 +175,7 @@ export const playerConsumer: EventHandlers["player.event"] = async (
         return;
       }
       const movie = await app.library.db.orm.public.Movie.create({
-        externalId: details!.imdb_id ?? media.movieId,
+        externalId: details!.imdb_id ?? details?.external_ids?.imdb_id,
         averagevote: details.vote_average,
         description: details.overview,
         title: details.title,
@@ -178,9 +183,11 @@ export const playerConsumer: EventHandlers["player.event"] = async (
         mediaType: details.mediad_type ?? "movie",
         originalLanguage: details.original_language,
         popularity: details.popularity,
-        releaseDate: details.release_date ?? details.first_air_date ?? "",
+        release_date: dayjs(
+          details.release_date ?? details.first_air_date ?? "",
+        ).toDate(),
         id: details.id,
-        poster: details.poster_path,        
+        poster: details.poster_path,
       });
       await app.library.db.orm.public.Genre.createAll(
         details.genres.map((a) => ({
@@ -199,25 +206,43 @@ export const playerConsumer: EventHandlers["player.event"] = async (
       );
       movieId = movie.id;
     }
-    const record = await app.library.db.orm.public.WatchHistory.upsert({
-      create: {
+    const completeRatio =
+      payload.args?.currentTime && payload.args?.duration
+        ? payload.args.currentTime / payload.args.duration
+        : 0;
+    const latestRecord = await app.library.db.orm.public.WatchHistory.where({
+      userId: payload.userId,
+      movieId,
+    })
+      .orderBy((a) => a.id.desc())
+      .first();
+
+    // Ignore trailing events from a watch that has already been completed.
+    if (latestRecord?.status === "full" && completeRatio > 0.95) {
+      return;
+    }
+
+    let record = latestRecord;
+    if (!record || record.status === "full") {
+      // Start the first watch, or a new watch when the user rewatches.
+      record = await app.library.db.orm.public.WatchHistory.create({
         watchedDuration: payload.args?.currentTime,
         duration: payload.args?.duration,
         movieId,
         userId: payload.userId,
         startDate: new Date().toISOString(),
         status: "partial",
-      },
-      update: {
+      });
+    } else {
+      // Keep tracking the watch that is currently in progress.
+      await app.library.db.orm.public.WatchHistory.whereUnique({
+        id: record.id,
+      }).update({
         watchedDuration: payload.args?.currentTime,
         duration: payload.args?.duration,
-      },
-      conflictOn: { movieId: movieId, userId: payload.userId },
-    });
-    const completeRatio =
-      payload.args?.currentTime && payload.args?.duration
-        ? payload.args.currentTime / payload.args.duration
-        : 0;
+      });
+    }
+
     switch (payload.args?.action) {
       case "start":
         if (completeRatio < 0.1) {
@@ -225,22 +250,48 @@ export const playerConsumer: EventHandlers["player.event"] = async (
         }
         break;
       case "pause":
-        await app.library.db.orm.public.WatchHistory.where({
+        await app.library.db.orm.public.WatchHistory.whereUnique({
           id: record.id,
         }).update({ pausecount: record.pausecount + 1 });
         break;
       case "stop":
-        {
-          if (completeRatio > 0.95) {
-            // TODO: trigger completed event
-          }
-        }
+        await app.events.queue.add("media.stop", {
+          name: "media.stop",
+          occurredAt: new Date().toISOString(),
+          payload: { watchHistoryId: record.id },
+        });
         break;
       default:
         return;
     }
+  } catch (error) {
+    app.log.error(error);
+  }
+};
+
+export const mediaStopConsumer: EventHandlers["media.stop"] = async (
+  app,
+  payload,
+) => {
+  try {
+    const watchHistory =
+      await app.library.db.orm.public.WatchHistory.whereUnique({
+        id: payload.watchHistoryId,
+      }).first();
+    if (!watchHistory || watchHistory.status === "full") {
+      return;
+    }
+    const completeRatio =
+      watchHistory.duration > 0
+        ? watchHistory.watchedDuration / watchHistory.duration
+        : 0;
     if (completeRatio > 0.95) {
-      // TODO: trigger watch complete event
+      await app.library.db.orm.public.WatchHistory.whereUnique({
+        id: watchHistory.id,
+      }).update({
+        status: "full",
+        endDate: new Date().toISOString(),
+      });
     }
   } catch (error) {
     app.log.error(error);
