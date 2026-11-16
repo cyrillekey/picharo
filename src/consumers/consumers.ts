@@ -218,7 +218,7 @@ export const playerConsumer: EventHandlers["player.event"] = async (
       .first();
 
     // Ignore trailing events from a watch that has already been completed.
-    if (latestRecord?.status === "full" && completeRatio > 0.95) {
+    if (latestRecord?.status === "full" && completeRatio >= 0.95) {
       return;
     }
 
@@ -285,7 +285,7 @@ export const mediaStopConsumer: EventHandlers["media.stop"] = async (
       watchHistory.duration > 0
         ? watchHistory.watchedDuration / watchHistory.duration
         : 0;
-    if (completeRatio > 0.95) {
+    if (completeRatio >= 0.95) {
       await app.library.db.orm.public.WatchHistory.whereUnique({
         id: watchHistory.id,
       }).update({
