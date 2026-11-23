@@ -206,16 +206,15 @@ export const playerConsumer: EventHandlers["player.event"] = async (
       );
       movieId = movie.id;
     }
-    const completeRatio =
-      payload.args?.currentTime && payload.args?.duration
-        ? payload.args.currentTime / payload.args.duration
-        : 0;
+
     const latestRecord = await app.library.db.orm.public.WatchHistory.where({
       userId: payload.userId,
       movieId,
-    })
-      .orderBy((a) => a.id.desc())
-      .first();
+    }).first();
+    const completeRatio = payload.args?.currentTime
+      ? payload.args.currentTime /
+        (payload?.args?.duration || latestRecord?.duration || 0)
+      : 0;
 
     // Ignore trailing events from a watch that has already been completed.
     if (latestRecord?.status === "full" && completeRatio >= 0.95) {
