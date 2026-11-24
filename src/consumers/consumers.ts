@@ -35,6 +35,8 @@ export const libraryConsumer: EventHandlers["library.event"] = async (
             ).toDate(),
             id: details.id,
             poster: details.poster_path,
+            background: details.background_image,
+            logo: details.logo_image,
             voteCount: details.vote_count,
           });
           await app.library.db.orm.public.Genre.createAll(
@@ -188,6 +190,8 @@ export const playerConsumer: EventHandlers["player.event"] = async (
         ).toDate(),
         id: details.id,
         poster: details.poster_path,
+        background: details.background_image,
+        logo: details.logo_image
       });
       await app.library.db.orm.public.Genre.createAll(
         details.genres.map((a) => ({

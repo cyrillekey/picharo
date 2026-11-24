@@ -62,6 +62,8 @@ class TMDBClient {
         poster_path: this.getPoster(
           response.external_ids?.imdb_id || response.imdb_id,
         ),
+        logo_image: this.getLogo(response?.external_ids?.imdb_id || response.imdb_id),
+        background_image: this.getBackground(response?.external_ids?.imdb_id || response.imdb_id)
       };
     } catch (error) {
       this.app?.log.error(error);
@@ -82,6 +84,8 @@ class TMDBClient {
           ...details,
           mediad_type: shallow.media_type,
           poster_path: this.getPoster(details.imdb_id),
+          background_image: this.getBackground(details.imdb_id),
+          logo_image: this.getLogo(details.imdb_id)
         };
       return null;
     } catch (error) {
@@ -91,6 +95,12 @@ class TMDBClient {
   }
   private getPoster(id: string): string {
     return `https://images.metahub.space/poster/small/${id}/img`;
+  }
+  private getLogo(id: string): string {
+    return `https://images.metahub.space/logo/medium/${id}/img`;
+  }
+  private getBackground(id: string): string {
+    return `https://images.metahub.space/background/medium/${id}/img`;
   }
   private async searchMovie(
     query: string,

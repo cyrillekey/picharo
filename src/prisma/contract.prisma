@@ -21,7 +21,7 @@ model Movie {
   popularity       Float
   averagevote      Float
   voteCount        Int?
-  ageRating        String?  
+  ageRating        String?
   release_date     DateTime?
   mediaType        String
   originalLanguage String
@@ -29,6 +29,8 @@ model Movie {
   collection       String?
   award            String?
   poster           String?
+  logo             String?
+  background       String?
   externalId       String             @unique
   genres           MovieGenre[]       @relation(name: "moviegenrerelationship",)
   watchHistory     WatchHistory[]

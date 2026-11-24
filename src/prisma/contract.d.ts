@@ -23,7 +23,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'849a719c8411b7874e81eac7558f8cc894b3be6a349e6637b25a9341034d946c'>;
+  StorageHashBase<'4c289a09d3ceba1964786621ae4295f4aa4c5d28dde57fbc764645eb7153f93a'>;
 export type ExecutionHash =
   ExecutionHashBase<'034ceb315de38386a4b7d07a73d6a73145c0750f2683b0f4604958845e57fdb8'>;
 export type ProfileHash =
@@ -338,12 +338,14 @@ export namespace Models {
     ageRating: FieldOutputTypes['public']['Movie']['ageRating'];
     averagevote: FieldOutputTypes['public']['Movie']['averagevote'];
     award: FieldOutputTypes['public']['Movie']['award'];
+    background: FieldOutputTypes['public']['Movie']['background'];
     collection: FieldOutputTypes['public']['Movie']['collection'];
     createdat: FieldOutputTypes['public']['Movie']['createdat'];
     description: FieldOutputTypes['public']['Movie']['description'];
     externalId: FieldOutputTypes['public']['Movie']['externalId'];
     id: FieldOutputTypes['public']['Movie']['id'];
     languages: FieldOutputTypes['public']['Movie']['languages'];
+    logo: FieldOutputTypes['public']['Movie']['logo'];
     mediaType: FieldOutputTypes['public']['Movie']['mediaType'];
     originalLanguage: FieldOutputTypes['public']['Movie']['originalLanguage'];
     popularity: FieldOutputTypes['public']['Movie']['popularity'];
@@ -492,6 +494,12 @@ type ContractBase = Omit<
                   readonly nullable: true;
                   readonly many: false;
                 };
+                readonly background: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                  readonly many: false;
+                };
                 readonly collection: {
                   readonly dataType: 'pg/text';
                   readonly codecId: 'pg/text@1';
@@ -529,6 +537,12 @@ type ContractBase = Omit<
                   readonly codecId: 'pg/text@1';
                   readonly nullable: false;
                   readonly many: { readonly elementNullable: false };
+                };
+                readonly logo: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                  readonly many: false;
                 };
                 readonly mediaType: {
                   readonly dataType: 'pg/text';
@@ -1054,6 +1068,10 @@ type ContractBase = Omit<
                 readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
+              readonly background: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
               readonly collection: {
                 readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
@@ -1082,6 +1100,10 @@ type ContractBase = Omit<
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
                 readonly many: { readonly elementNullable: false };
+              };
+              readonly logo: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
               readonly mediaType: {
                 readonly nullable: false;
@@ -1166,12 +1188,14 @@ type ContractBase = Omit<
                 readonly ageRating: { readonly column: 'ageRating' };
                 readonly averagevote: { readonly column: 'averagevote' };
                 readonly award: { readonly column: 'award' };
+                readonly background: { readonly column: 'background' };
                 readonly collection: { readonly column: 'collection' };
                 readonly createdat: { readonly column: 'createdat' };
                 readonly description: { readonly column: 'description' };
                 readonly externalId: { readonly column: 'externalId' };
                 readonly id: { readonly column: 'id' };
                 readonly languages: { readonly column: 'languages' };
+                readonly logo: { readonly column: 'logo' };
                 readonly mediaType: { readonly column: 'mediaType' };
                 readonly originalLanguage: { readonly column: 'originalLanguage' };
                 readonly popularity: { readonly column: 'popularity' };

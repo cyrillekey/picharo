@@ -14,6 +14,8 @@ export interface MovieResult {
   original_title: string;
   overview: string;
   poster_path: string;
+  background_image:string
+  logo_image: string
   media_type: string;
   original_language: string;
   genre_ids: number[];
@@ -41,6 +43,8 @@ export interface MovieDetails {
   overview: string;
   popularity: number;
   poster_path: string | null;
+  background_image:string
+  logo_image: string
   production_companies: ProductionCompany[];
   production_countries: ProductionCountry[];
   release_date: string;
